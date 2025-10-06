@@ -26,6 +26,41 @@ import bcrypt from "bcrypt";
 // };
 
 // ดึง users ทั้งหมด
+
+export const login = async (req, res) => {
+  const { email, password } = req.body;
+  console.log("email : " ,email);
+  try {
+    const q = `
+      SELECT 
+        u.firstname,
+        u.lastname,
+        t.teamname,
+        r.rolename,
+        u.phonenumber,
+        u.ispasswordchange
+      FROM users u
+      JOIN role r ON u.roleid = r.roleid
+      JOIN teams t ON u.teamid = t.teamid
+      WHERE u.usersemail = $1
+        AND u.password = crypt($2, u.password)
+      LIMIT 1;
+    `;
+
+    const { rows } = await pool.query(q, [email, password]);
+    
+    if (rows.length === 0) {
+      return res.status(401).send("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง หรือบัญชีถูกระงับ");
+    }
+
+  // redirect to the public URL - express.static serves files under /public
+  return res.redirect("/page/main.html");
+  } catch (e) {
+    console.error(e);
+    res.status(500).send("เกิดข้อผิดพลาดภายในระบบ");
+  }
+};
+
 export const getUsers = async (req, res) => {
   try {
     const { rows } = await pool.query(`

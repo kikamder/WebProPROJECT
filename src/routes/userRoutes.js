@@ -1,6 +1,7 @@
 // src/routes/userRoutes.js
 import express from "express";
-import { getUsers} from "../controllers/usersController.js";
+import bodyParser from "body-parser";
+import { getUsers , login} from "../controllers/usersController.js";
 
 const router = express.Router();
 
@@ -8,9 +9,10 @@ const router = express.Router();
 //router.post("/register", registerUser);
 
 // GET /api/users → ดึงผู้ใช้ทั้งหมด
-router.get("/", getUsers);
+router.get("/getUser", getUsers);
 
 // DELETE /api/users/:id → ลบผู้ใช้ตาม id
 //router.delete("/:id", deleteUser);
+router.post("/login", login)
 
 export default router;
