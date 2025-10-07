@@ -1,11 +1,12 @@
 // src/routes/userRoutes.js
 import express from "express";
 import bodyParser from "body-parser";
-import { getUsers , login} from "../controllers/usersController.js";
+import { getUsers , login , getProblemlist} from "../controllers/usersController.js";
 import { dirname } from "path";
 import path from "path";
 import { fileURLToPath } from "url";
 import { requireAuth , authGuard , sessionMiddleware , attachUser} from "../middlewares/auth.js";
+import { get } from "http";
 const router = express.Router();
 
 
@@ -25,4 +26,8 @@ router.get("/main", requireAuth, (req, res) => {
   const filePath = path.join(__dirname, "../../public/page/main.html");
   return res.sendFile(filePath);
 });
+
+
+router.get("/main/data", requireAuth, getProblemlist);
+
 export default router;

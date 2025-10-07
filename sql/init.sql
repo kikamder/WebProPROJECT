@@ -23,6 +23,7 @@ CREATE TABLE Users (
 	teamId INT NOT NULL,
 	roleId INT NOT NULL,
 	phoneNumber VARCHAR(10),
+	ispasswordchange BOOLEAN DEFAULT FALSE,
 	createAt TIMESTAMP,
 	FOREIGN KEY (teamId) REFERENCES Teams(teamId),
 	FOREIGN KEY (roleId) REFERENCES Role(roleId)
