@@ -8,8 +8,6 @@ import pool from "../dbConfig/db.js";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export const requireAuth = (req, res, next) => {
-  // Debug: log session info
- 
   // Prefer checking session directly. If no session user, redirect to login page (/)
   if (!req.session || !req.session.user) {
     

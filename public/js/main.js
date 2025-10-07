@@ -9,15 +9,17 @@ fetch("/main/data")
 
       tr.innerHTML = `
         <td>${row.problemid}</td>
+        <td>${new Date(row.createat).toLocaleString("th-TH")}</td>
+        <td>${row.createdby || "-"}</td>
         <td>${row.title || "-"}</td>
-        <td>${row.description || "-"}</td>
         <td>${row.categoryname || "-"}</td>
+        <td>${row.description || "-"}</td>
         <td>${row.departmentname || "-"}</td>
         <td>${row.statusstate || "-"}</td>
         <td>${row.prioritylevel || "-"}</td>
         <td>${row.location || "-"}</td>
-        <td>${row.createdby || "-"}</td>
-        <td>${new Date(row.createat).toLocaleString("th-TH")}</td>
+        <td>${row.comment || "-"}</td>
+        
       `;
 
       table.appendChild(tr);

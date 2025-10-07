@@ -58,6 +58,7 @@ CREATE TABLE Problem (
 	departmentId INT NOT NULL,
 	priorityId INT NOT NULL,
 	location VARCHAR(100) NOT NULL,
+	comment TEXT
 	FOREIGN KEY (createBy) REFERENCES Users(usersId),
 	FOREIGN KEY (categoryId) REFERENCES Category(categoryId),
 	FOREIGN KEY (statusId) REFERENCES Status(statusId),

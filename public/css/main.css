@@ -2,3 +2,12 @@ body {
     background: linear-gradient(135deg, #fcfaee 100%, #ba7b6b 100%);
     min-height: 100vh;
 }
+#problemTable th, #problemTable td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.table {
+    text-align: center;
+    vertical-align: middle;
+}

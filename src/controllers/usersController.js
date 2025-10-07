@@ -112,14 +112,15 @@ export const getProblemlist = async (req, res) =>  {
         c.categoryname,
         s.statusstate,
         d.departmentname,
-        sla.prioritylevel
+        sla.prioritylevel,
+        p.comment
       FROM Problem p
       JOIN Users u ON p.createby = u.usersid
       JOIN Category c ON p.categoryid = c.categoryid
       JOIN Status s ON p.statusid = s.statusid
       JOIN Department d ON p.departmentid = d.departmentid
       JOIN ServiceLevelAgreement sla ON p.priorityid = sla.priorityid
-      ORDER BY p.problemid DESC
+      ORDER BY p.problemid ASC
       LIMIT 20;
     `);
     res.json(result.rows);
