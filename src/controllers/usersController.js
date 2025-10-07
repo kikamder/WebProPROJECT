@@ -25,7 +25,7 @@ import bcrypt from "bcrypt";
 //   }
 // };
 
-// ดึง users ทั้งหมด
+
 
 export const login = async (req, res) => {
   const { email, password } = req.body;
@@ -33,11 +33,11 @@ export const login = async (req, res) => {
   try {
     const q = `
       SELECT 
+        u.usersid,
         u.firstname,
         u.lastname,
         t.teamname,
         r.rolename,
-        u.phonenumber,
         u.ispasswordchange
       FROM users u
       JOIN role r ON u.roleid = r.roleid
@@ -49,18 +49,31 @@ export const login = async (req, res) => {
 
     const { rows } = await pool.query(q, [email, password]);
     
+    
     if (rows.length === 0) {
       return res.status(401).send("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง หรือบัญชีถูกระงับ");
     }
 
-  // redirect to the public URL - express.static serves files under /public
-  return res.redirect("/page/main.html");
+    const u = rows[0];
+    req.session.user = {
+      usersid: u.usersid,
+      firstname: u.firstname,
+      lastname: u.lastname,
+      teamname : u.teamname,
+      rolename: u.rolename,
+      ispasswordchange: u.ispasswordchange,
+    };
+  if(rows.ispasswordchange === false){
+    
+  }
+  return res.redirect("/main");
   } catch (e) {
     console.error(e);
     res.status(500).send("เกิดข้อผิดพลาดภายในระบบ");
   }
 };
 
+// ดึง users ทั้งหมด
 export const getUsers = async (req, res) => {
   try {
     const { rows } = await pool.query(`

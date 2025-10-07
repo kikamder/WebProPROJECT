@@ -2,8 +2,10 @@
 import express from "express";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
+import path from "path";
 import router from "./src/routes/userRoutes.js";
 import { initMiddleware } from "./src/middlewares/middleware.js";
+import { requireAuth } from "./src/middlewares/auth.js";
 import bodyParser from "body-parser";
 import pg from "pg";
 import dotenv from "dotenv";
@@ -22,16 +24,21 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(express.static(__dirname + "/public")); //ให้ Express เสิร์ฟไฟล์ static
+initMiddleware(app);
+
+// Serve the /page folder behind auth: any request to /page/* will go through requireAuth
+app.use('/page', requireAuth, express.static(path.join(__dirname, 'public', 'page')));
+
+// Serve other public static files (css, js, images, root index.html, etc.)
+app.use(express.static(path.join(__dirname, 'public')));
+
 
 app.use('/.well-known/appspecific/com.chrome.devtools.json', (req, res, next) => {
-  // ตอบ 204 (No Content) ถ้าคุณอยากไม่แสดง 401 ให้คนข้างนอกเห็น
+ 
   res.status(204).end();
 });
 
-initMiddleware(app); // เรียกใช้ middleware
-
-app.use("/", router); // ใช้ userRoutes สำหรับเส้นทาง /api/users
+app.use("/", router); // mount routes
 
 
 

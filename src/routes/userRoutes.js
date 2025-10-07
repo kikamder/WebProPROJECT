@@ -2,8 +2,14 @@
 import express from "express";
 import bodyParser from "body-parser";
 import { getUsers , login} from "../controllers/usersController.js";
-
+import { dirname } from "path";
+import path from "path";
+import { fileURLToPath } from "url";
+import { requireAuth , authGuard , sessionMiddleware , attachUser} from "../middlewares/auth.js";
 const router = express.Router();
+
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // POST /api/users/register → สมัครสมาชิก
 //router.post("/register", registerUser);
@@ -15,4 +21,8 @@ router.get("/getUser", getUsers);
 //router.delete("/:id", deleteUser);
 router.post("/login", login)
 
+router.get("/main", requireAuth, (req, res) => {
+  const filePath = path.join(__dirname, "../../public/page/main.html");
+  return res.sendFile(filePath);
+});
 export default router;
