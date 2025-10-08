@@ -6,7 +6,6 @@ fetch("/main/data")
 
     data.forEach(row => {
       const tr = document.createElement("tr");
-
       tr.innerHTML = `
         <td>${row.problemid}</td>
         <td>${new Date(row.createat).toLocaleString("th-TH")}</td>
@@ -19,12 +18,28 @@ fetch("/main/data")
         <td>${row.prioritylevel || "-"}</td>
         <td>${row.location || "-"}</td>
         <td>${row.comment || "-"}</td>
-        
       `;
-
       table.appendChild(tr);
     });
   })
   .catch(err => {
     console.error("Error fetching problems:", err);
+  });
+
+
+fetch("/main/home/data")
+  .then(res => {
+    if (!res.ok) throw new Error("HTTP status " + res.status);
+    return res.json();
+  })
+  .then(data => {
+    const el = document.getElementById("firstname");
+    if (!el) return;
+
+    // ✅ ป้องกันกรณีที่ไม่มีข้อมูล
+    const firstname = data && data.firstname ? data.firstname : "ไม่ทราบชื่อ";
+    el.textContent = firstname;
+  })
+  .catch(err => {
+    console.error("Error fetching user data:", err);
   });

@@ -63,7 +63,7 @@ export const login = async (req, res) => {
       rolename: u.rolename,
       ispasswordchange: u.ispasswordchange,
     };
-  if(rows.ispasswordchange === false){
+  if(u.ispasswordchange === false){
     
   }
   return res.redirect("/main");
@@ -85,6 +85,13 @@ export const getUsers = async (req, res) => {
     res.status(500).json({ error: "ดึงข้อมูล users ไม่ได้" });
   }
 };
+
+
+
+
+
+
+
 
 // ลบ user ตาม id
 // export const deleteUser = async (req, res) => {
@@ -127,5 +134,39 @@ export const getProblemlist = async (req, res) =>  {
   } catch (err) {
     console.error("Database error:", err);
     res.status(500).json({ error: "Database error" });
+  }
+};
+
+export const getUser = async (req, res) => {
+  try {
+    const userId = (req.session && req.session.user && req.session.user.usersid) || req.session.usersid;
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized: No session" });
+    }
+
+    const result = await pool.query(`
+      SELECT 
+        u.firstname,
+        u.lastname,
+        t.teamname,
+        r.rolename,
+        u.phonenumber,
+        u.ispasswordchange
+      FROM users u
+      JOIN role r ON u.roleid = r.roleid
+      JOIN teams t ON u.teamid = t.teamid
+      WHERE u.usersid = $1
+      LIMIT 1;
+    `, [userId]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // ✅ ส่งข้อมูลกลับไปให้ fetch
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("Database error:", err);
+    res.status(500).json({ message: "Server error" });
   }
 };

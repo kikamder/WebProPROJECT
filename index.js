@@ -41,8 +41,6 @@ app.use('/.well-known/appspecific/com.chrome.devtools.json', (req, res, next) =>
 app.use("/", router); // mount routes
 
 
-
-
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });

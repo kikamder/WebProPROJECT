@@ -1,7 +1,7 @@
 // src/routes/userRoutes.js
 import express from "express";
 import bodyParser from "body-parser";
-import { getUsers , login , getProblemlist} from "../controllers/usersController.js";
+import { getUsers , login , getProblemlist, getUser} from "../controllers/usersController.js";
 import { dirname } from "path";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -18,6 +18,10 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 // GET /api/users → ดึงผู้ใช้ทั้งหมด
 router.get("/getUser", getUsers);
 
+router.get("/login", (req, res) => {
+  return res.redirect('/');
+});
+
 // DELETE /api/users/:id → ลบผู้ใช้ตาม id
 //router.delete("/:id", deleteUser);
 router.post("/login", login)
@@ -27,7 +31,12 @@ router.get("/main", requireAuth, (req, res) => {
   return res.sendFile(filePath);
 });
 
+router.get("/main/home", requireAuth,(req, res) => {
+  const filePath = path.join(__dirname, "../../public/page/home.html");
+  return res.sendFile(filePath);
+});
 
+router.get("/main/home/data",requireAuth, getUser);
 router.get("/main/data", requireAuth, getProblemlist);
 
 export default router;

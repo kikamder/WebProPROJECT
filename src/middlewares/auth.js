@@ -43,7 +43,7 @@ export const sessionMiddleware = session({
   cookie: { 
       httpOnly: true,
       sameSite: "lax",
-      maxAge: 1000 * 60 * 15 },
+      maxAge: 1000 * 60 * 60 },
 });
 
 
