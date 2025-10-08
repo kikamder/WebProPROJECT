@@ -8,13 +8,18 @@ import pool from "../dbConfig/db.js";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export const requireAuth = (req, res, next) => {
-  // Prefer checking session directly. If no session user, redirect to login page (/)
-  if (!req.session || !req.session.user) {
-    
-    return res.redirect('/');
-  }
-  next();
+    if (!req.session || !req.session.user) {
+        return res.redirect('/login');
+    }
+    next();
 }
+
+export const redirectIfAuth = (req, res, next) => {
+  if (req.session.user) {
+    return res.redirect('/home');
+  }
+  next(); // ถ้ายังไม่ล็อกอิน ให้ผ่านไปได้ (เพื่อให้เห็นหน้าฟอร์ม)
+};
 
 
 
@@ -23,11 +28,10 @@ export const authGuard = (req, res, next) => {
     const openPaths = ["/", "/login", "/logout", "/getUser"];
     // Allow static asset prefixes (so css/js/images load without auth)
     const openPrefixes = ["/css", "/js", "/images", "/img", "/assets", "/fonts", "/favicon.ico"];
-
     if (openPaths.includes(req.path) || openPrefixes.some(p => req.path.startsWith(p))) {
       return next(); // allow index, login and static assets
     }
-
+    
     return requireAuth(req, res, next);
 };
 
@@ -44,8 +48,8 @@ export const sessionMiddleware = session({
       httpOnly: true,
       sameSite: "lax",
       maxAge: 1000 * 60 * 60 },
+      
 });
-
 
 export const attachUser = (req, res, next) => {
   if (req.session && req.session.user) {
@@ -54,3 +58,12 @@ export const attachUser = (req, res, next) => {
   next();
 };
 
+
+export const requireRole = (...Role) => {
+  //  if (!req.session || !req.session.user)
+  //     return res.redirect('/');
+   
+  //  if (Role.includes(req.user.rolename)){
+  //     res.send("คุณมีสิทธิ์เข้าใช้งานหน้านี้");
+  //  }
+ };

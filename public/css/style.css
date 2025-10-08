@@ -4,7 +4,12 @@ body {
     display: flex;
     justify-content: center;
 }
-
+.renewPassword {
+    background: linear-gradient(135deg, #fcfaee 100%, #ba7b6b 100%);
+    
+    display: flex;
+    justify-content: center;
+}
 .login-container {
     margin-top: 50px;
     background: white;

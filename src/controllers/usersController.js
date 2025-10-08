@@ -25,74 +25,6 @@ import bcrypt from "bcrypt";
 //   }
 // };
 
-
-
-export const login = async (req, res) => {
-  const { email, password } = req.body;
-  console.log("email : " ,email);
-  try {
-    const q = `
-      SELECT 
-        u.usersid,
-        u.firstname,
-        u.lastname,
-        t.teamname,
-        r.rolename,
-        u.ispasswordchange
-      FROM users u
-      JOIN role r ON u.roleid = r.roleid
-      JOIN teams t ON u.teamid = t.teamid
-      WHERE u.usersemail = $1
-        AND u.password = crypt($2, u.password)
-      LIMIT 1;
-    `;
-
-    const { rows } = await pool.query(q, [email, password]);
-    
-    
-    if (rows.length === 0) {
-      return res.status(401).send("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง หรือบัญชีถูกระงับ");
-    }
-
-    const u = rows[0];
-    req.session.user = {
-      usersid: u.usersid,
-      firstname: u.firstname,
-      lastname: u.lastname,
-      teamname : u.teamname,
-      rolename: u.rolename,
-      ispasswordchange: u.ispasswordchange,
-    };
-  if(u.ispasswordchange === false){
-    
-  }
-  return res.redirect("/main");
-  } catch (e) {
-    console.error(e);
-    res.status(500).send("เกิดข้อผิดพลาดภายในระบบ");
-  }
-};
-
-// ดึง users ทั้งหมด
-export const getUsers = async (req, res) => {
-  try {
-    const { rows } = await pool.query(`
-      SELECT * FROM users
-    `);
-    res.json(rows);
-  } catch (err) {
-    console.error("Get users error:", err);
-    res.status(500).json({ error: "ดึงข้อมูล users ไม่ได้" });
-  }
-};
-
-
-
-
-
-
-
-
 // ลบ user ตาม id
 // export const deleteUser = async (req, res) => {
 //   const { id } = req.params;
@@ -105,37 +37,6 @@ export const getUsers = async (req, res) => {
 //   }
 // };
 
-
-export const getProblemlist = async (req, res) =>  {
-  try {
-    const result = await pool.query(`
-      SELECT 
-        p.problemid,
-        p.title,
-        p.description,
-        p.createat,
-        p.location,
-        u.firstname AS createdby,
-        c.categoryname,
-        s.statusstate,
-        d.departmentname,
-        sla.prioritylevel,
-        p.comment
-      FROM Problem p
-      JOIN Users u ON p.createby = u.usersid
-      JOIN Category c ON p.categoryid = c.categoryid
-      JOIN Status s ON p.statusid = s.statusid
-      JOIN Department d ON p.departmentid = d.departmentid
-      JOIN ServiceLevelAgreement sla ON p.priorityid = sla.priorityid
-      ORDER BY p.problemid ASC
-      LIMIT 20;
-    `);
-    res.json(result.rows);
-  } catch (err) {
-    console.error("Database error:", err);
-    res.status(500).json({ error: "Database error" });
-  }
-};
 
 export const getUser = async (req, res) => {
   try {
@@ -162,11 +63,22 @@ export const getUser = async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(404).json({ message: "User not found" });
     }
-
-    // ✅ ส่งข้อมูลกลับไปให้ fetch
     res.json(result.rows[0]);
   } catch (err) {
     console.error("Database error:", err);
     res.status(500).json({ message: "Server error" });
+  }
+};
+
+// ดึง users ทั้งหมด
+export const getUsers = async (req, res) => {
+  try {
+    const { rows } = await pool.query(`
+      SELECT * FROM users
+    `);
+    res.json(rows);
+  } catch (err) {
+    console.error("Get users error:", err);
+    res.status(500).json({ error: "ดึงข้อมูล users ไม่ได้" });
   }
 };
