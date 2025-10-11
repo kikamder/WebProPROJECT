@@ -2,7 +2,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import { getUsers, getUser} from "../controllers/usersController.js";
-import { getProblemlist } from "../controllers/problemController.js";
+import { getProblemlist ,getProblemlastest} from "../controllers/problemController.js";
 import { changePassword, login } from "../controllers/authController.js";
 import { dirname } from "path";
 import path from "path";
@@ -37,9 +37,17 @@ router.get("/main", requireAuth,(req, res) => {
   const filePath = path.join(__dirname, "../../public/page/home.html");
   return res.sendFile(filePath);
 });
+router.get("/main/reportProblem", requireAuth,(req, res) => {
+  const filePath = path.join(__dirname, "../../public/page/problemForm.html");
+  return res.sendFile(filePath);
+});
 
 router.get("/main/data",requireAuth, getUser);
 router.get("/main/problemlist/data", requireAuth, getProblemlist);
+
+// router.get("/main/problemlastest/data", getProblemlastest , (req, res) => {
+
+// });
 
 
 export default router;
