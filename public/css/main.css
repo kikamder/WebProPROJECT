@@ -52,9 +52,7 @@ body {
 .nav-center {
     gap: 20px;
 }
-.btn-group {
-   
-}
+
 .nav-btn {
     background: linear-gradient(135deg, #FFD400 0%, #FFDD3C 100%) !important;
     color: rgb(0, 0, 0) !important;
