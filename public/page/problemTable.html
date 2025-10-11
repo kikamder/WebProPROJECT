@@ -6,10 +6,13 @@
     <title>รายการปัญหา</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    
     <link rel="stylesheet" href="../css/main.css">
 </head>
 <body>
     <!-- Navbar -->
+    <div id="page-problem-content"></div> 
     <nav class="navbar navbar-expand-lg navbar-custom">
         <div class="container-fluid px-4">
             <div class="logo-box">LOGO</div>
@@ -23,10 +26,10 @@
             <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
                 <ul class="navbar-nav nav-center">
                     <li class="nav-item">
-                        <a class="nav-link nav-btn active" href="#">หน้า Home</a>
+                        <a class="nav-link nav-btn active" href="/main">หน้า Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link nav-btn" href="#">รวมปัญหาที่แจ้ง</a>
+                        <a class="nav-link nav-btn" href="/main/problemlist">รวมปัญหาที่แจ้ง</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link nav-btn" href="#">ประวัติการแจ้งของฉัน</a>
@@ -46,7 +49,7 @@
                         <i class="fas fa-clipboard-list me-2"></i>รายการปัญหา (Problems)
                     </h1>
                 </div>
-                <div class="col-md-6 text-end">
+                <div class="col-md-6 text-end ">
                     <div class="btn-group" role="group">
                         <button class="btn btn-filter active" data-filter="all">
                             <i class="fas fa-th-list me-1"></i>ทั้งหมด
@@ -86,61 +89,7 @@
                     </thead>
                     <tbody id="problemTable">
                         <!-- Sample Data Row 1 -->
-                        <tr>
-                            <td><span class="badge bg-secondary">#001</span></td>
-                            <td>11/10/2025 10:30</td>
-                            <td>นายสมชาย ใจดี</td>
-                            <td>เครื่องพิมพ์ไม่ทำงาน</td>
-                            <td><span class="badge bg-info">ฮาร์ดแวร์</span></td>
-                            <td class="text-truncate" style="max-width: 250px;">เครื่องพิมพ์ในห้อง 305 ไม่สามารถพิมพ์เอกสารได้ มีแสดง error บนหน้าจอ</td>
-                            <td>IT Support</td>
-                            <td><span class="badge status-badge status-pending">รอดำเนินการ</span></td>
-                            <td><span class="badge priority-high">สูง</span></td>
-                            <td>อาคาร A ชั้น 3</td>
-                            <td>
-                                <button class="btn btn-sm btn-comment" title="ดูความคิดเห็น">
-                                    <i class="fas fa-comments"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        
-                        <!-- Sample Data Row 2 -->
-                        <tr>
-                            <td><span class="badge bg-secondary">#002</span></td>
-                            <td>11/10/2025 09:15</td>
-                            <td>นางสาวมาลี รักดี</td>
-                            <td>อินเทอร์เน็ตช้า</td>
-                            <td><span class="badge bg-warning text-dark">เครือข่าย</span></td>
-                            <td class="text-truncate" style="max-width: 250px;">การเชื่อมต่ออินเทอร์เน็ตในแผนกบัญชีช้ามาก ไม่สามารถใช้งานระบบได้</td>
-                            <td>บัญชี</td>
-                            <td><span class="badge status-badge status-progress">กำลังดำเนินการ</span></td>
-                            <td><span class="badge priority-medium">กลาง</span></td>
-                            <td>อาคาร B ชั้น 2</td>
-                            <td>
-                                <button class="btn btn-sm btn-comment" title="ดูความคิดเห็น">
-                                    <i class="fas fa-comments"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        
-                        <!-- Sample Data Row 3 -->
-                        <tr>
-                            <td><span class="badge bg-secondary">#003</span></td>
-                            <td>10/10/2025 16:45</td>
-                            <td>นายวิชัย ขยัน</td>
-                            <td>รีเซ็ตรหัสผ่าน</td>
-                            <td><span class="badge bg-success">บัญชีผู้ใช้</span></td>
-                            <td class="text-truncate" style="max-width: 250px;">ลืมรหัสผ่านเข้าระบบ ขอรีเซ็ตรหัสผ่านใหม่</td>
-                            <td>ฝ่ายขาย</td>
-                            <td><span class="badge status-badge status-completed">เสร็จสิ้น</span></td>
-                            <td><span class="badge priority-low">ต่ำ</span></td>
-                            <td>อาคาร A ชั้น 1</td>
-                            <td>
-                                <button class="btn btn-sm btn-comment" title="ดูความคิดเห็น">
-                                    <i class="fas fa-comments"></i>
-                                </button>
-                            </td>
-                        </tr>
+                       
                     </tbody>
                 </table>
             </div>
@@ -167,7 +116,88 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <div class="modal fade" id="problemDetailModal" tabindex="-1" aria-labelledby="problemDetailModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content modal-custom">
+                <div class="modal-header modal-header-custom">
+                    <h5 class="modal-title" id="problemDetailModalLabel">
+                        <i class="fas fa-info-circle me-2"></i>ชื่องาน
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body modal-body-custom">
+                    <!-- รายละเอียดงาน Section -->
+                    <div class="detail-section mb-4">
+                        <h6 class="section-title-modal">
+                            <strong>รายละเอียดงาน : </strong>
+                            <span id="problemDetail"></span> 
+                        </h6> 
+                            
+                        <div class="detail-box">
+                            <p class="mb-0"><b>พร้อมใส่ที่แนบมา (ถ้ามี) : </b></p>
+                            
+                        </div>
+                    </div>
+
+                    <!-- สถานะงาน Section -->
+                    <div class="status-section mb-3">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="status-label">สถานะงาน :</label>
+                                <div class="status-value">
+                                    <span class="badge status-badge-large status-pending">รอดำเนินการ</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="status-label">Priority :</label>
+                                <div class="status-value">
+                                    <span class="badge priority-badge-large priority-high">สูง</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ปุ่มเลือกรับงาน -->
+                    <div class="action-section">
+                        <button class="btn btn-accept-work">
+                            <i class="fas fa-hand-pointer me-2"></i>
+                            คลิกเพื่อรับงานครับ<br>เมื่อ : เวลา
+                        </button>
+                    </div>
+
+                    <!-- พื้นที่ Scrollable -->
+                    <div class="scrollable-content mt-4">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label"><i class="fas fa-calendar me-2"></i>วันที่สร้าง:</span>
+                                <span class="info-value">11/10/2025 10:30</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label"><i class="fas fa-user me-2"></i>ผู้สร้าง:</span>
+                                <span class="info-value">นายสมชาย ใจดี</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label"><i class="fas fa-building me-2"></i>แผนก:</span>
+                                <span class="info-value">IT Support</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label"><i class="fas fa-map-marker-alt me-2"></i>สถานที่:</span>
+                                <span class="info-value">อาคาร A ชั้น 3</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
     <script src="../js/fetch.js"></script>
+    <script src="../js/main.js"></script>
 </body>
 </html>

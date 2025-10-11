@@ -28,18 +28,18 @@ router.post("/login", login)
 router.post("/login/changepassword" , requireAuth,changePassword);
 
 
-router.get("/home/problemlist", requireAuth, (req, res) => {
-  const filePath = path.join(__dirname, "../../public/page/main.html");
+router.get("/main/problemlist", requireAuth, (req, res) => {
+  const filePath = path.join(__dirname, "../../public/page/problemTable.html");
   return res.sendFile(filePath);
 });
 
-router.get("/home", requireAuth,(req, res) => {
+router.get("/main", requireAuth,(req, res) => {
   const filePath = path.join(__dirname, "../../public/page/home.html");
   return res.sendFile(filePath);
 });
 
-router.get("/main/home/data",requireAuth, getUser);
-router.get("/main/data", requireAuth, getProblemlist);
+router.get("/main/data",requireAuth, getUser);
+router.get("/main/problemlist/data", requireAuth, getProblemlist);
 
 
 export default router;

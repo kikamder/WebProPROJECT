@@ -51,7 +51,7 @@ export const login = async (req, res) => {
     const filePath = path.join(__dirname, "../../public/page/newPassword.html");
     return res.sendFile(filePath);
   }
-  return res.redirect("/home");
+  return res.redirect("/main");
   } catch (e) {
     console.error(e);
     res.status(500).send("เกิดข้อผิดพลาดภายในระบบ");

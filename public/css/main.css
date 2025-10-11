@@ -52,7 +52,9 @@ body {
 .nav-center {
     gap: 20px;
 }
-
+.btn-group {
+   
+}
 .nav-btn {
     background: linear-gradient(135deg, #FFD400 0%, #FFDD3C 100%) !important;
     color: rgb(0, 0, 0) !important;
@@ -465,6 +467,7 @@ body {
 
 .table-custom {
     margin: 0;
+    
 }
 
 .table-header {
@@ -565,6 +568,8 @@ body {
     transform: scale(1.1);
 }
 
+
+
 /* Pagination */
 .pagination .page-link {
     color: #667eea;
@@ -592,7 +597,8 @@ body {
 /* Scrollbar Styling */
 .table-responsive::-webkit-scrollbar {
     width: 8px;
-    height: 8px;
+    height: 15px;
+    
 }
 
 .table-responsive::-webkit-scrollbar-track {
@@ -608,6 +614,17 @@ body {
 .table-responsive::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
 }
+
+.table-custom tbody td:nth-child(6) {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.table-custom tbody td:nth-child(6):hover {
+    background-color: #e3f2fd;
+}
+
+
 
 /* ===== Responsive Styles ===== */
 @media (max-width: 991px) {
