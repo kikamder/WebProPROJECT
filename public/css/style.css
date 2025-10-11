@@ -1,12 +1,10 @@
 body {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
-    display: flex;
-    justify-content: center;
+   
 }
 .renewPassword {
     background: linear-gradient(135deg, #fcfaee 100%, #ba7b6b 100%);
-    
     display: flex;
     justify-content: center;
 }
@@ -16,10 +14,19 @@ body {
     border-radius: 15px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
     padding: 40px;
-    min-width: 350px;
+    min-width: 300px;
+    max-width:  500px;
+    min-height: 500px;
     width:  100%;
+    
 }
-
+.container {
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
 .login-header {
     text-align: center;
     margin-bottom: 30px;
@@ -31,6 +38,7 @@ body {
 }
 
 .btn-login {
+    margin-top: 20px;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border: none;
     padding: 12px;
