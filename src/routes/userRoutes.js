@@ -1,13 +1,12 @@
 // src/routes/userRoutes.js
 import express from "express";
 import bodyParser from "body-parser";
-import { getUsers, getUser} from "../controllers/usersController.js";
-import { getProblemlist } from "../controllers/problemController.js";
-import { changePassword, login } from "../controllers/authController.js";
+import { getUsers , login , getProblemlist, getUser} from "../controllers/usersController.js";
 import { dirname } from "path";
 import path from "path";
 import { fileURLToPath } from "url";
-import { requireAuth , authGuard , sessionMiddleware , attachUser, redirectIfAuth} from "../middlewares/auth.js";
+import { requireAuth , authGuard , sessionMiddleware , attachUser} from "../middlewares/auth.js";
+import { get } from "http";
 const router = express.Router();
 
 
@@ -18,28 +17,38 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // GET /api/users → ดึงผู้ใช้ทั้งหมด
 router.get("/getUser", getUsers);
-router.get("/login", redirectIfAuth, (req, res) => {
-  res.sendFile(path.join(__dirname, "../../public/index.html")); 
-});
 
+// DELETE /api/users/:id → ลบผู้ใช้ตาม id
+//router.delete("/:id", deleteUser);
+router.post("/login", login);
 
-
-router.post("/login", login)
-router.post("/login/changepassword" , requireAuth,changePassword);
-
-
-router.get("/home/problemlist", requireAuth, (req, res) => {
-  const filePath = path.join(__dirname, "../../public/page/main.html");
+router.get("/newPassword", requireAuth, authGuard , (req, res) => {
+  const filePath = path.join(__dirname, "../../public/page/newPassword.html");
   return res.sendFile(filePath);
 });
 
-router.get("/home", requireAuth,(req, res) => {
+router.get("/home", requireAuth, authGuard , (req, res) => {
+  console.log("เข้า /home สำเร็จ, user =", req.session.user);
   const filePath = path.join(__dirname, "../../public/page/home.html");
   return res.sendFile(filePath);
 });
 
-router.get("/main/home/data",requireAuth, getUser);
-router.get("/main/data", requireAuth, getProblemlist);
+router.get("/main", requireAuth, (req, res) => {
+  const filePath = path.join(__dirname, "../../public/page/main.html");
+  return res.sendFile(filePath);
+});
 
+router.get("/main/data", requireAuth, getProblemlist); 
+
+router.get("/login", (req, res) => {
+  return res.redirect('/');
+});
+
+router.get("/main/home/data", requireAuth, getUser);
+
+router.get("/main/home", requireAuth,(req, res) => {
+  const filePath = path.join(__dirname, "../../public/page/home.html");
+  return res.sendFile(filePath);
+});
 
 export default router;
