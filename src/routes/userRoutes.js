@@ -45,9 +45,9 @@ router.get("/main/reportProblem", requireAuth,(req, res) => {
 router.get("/main/data",requireAuth, getUser);
 router.get("/main/problemlist/data", requireAuth, getProblemlist);
 
-// router.get("/main/problemlastest/data", getProblemlastest , (req, res) => {
+router.get("/main/problemlastest/data", getProblemlastest , (req, res) => {
 
-// });
+});
 
 
 export default router;
