@@ -20,7 +20,7 @@
                 <span></span>
             </button>
             
-            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav nav-center">
                     <li class="nav-item">
                         <a class="nav-link nav-btn active" href="/main">หน้า Home</a>
@@ -29,7 +29,10 @@
                         <a class="nav-link nav-btn" href="/main/problemlist">รวมปัญหาที่แจ้ง</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link nav-btn" href="#">ประวัติการแจ้งของฉัน</a>
+                        <a class="nav-link nav-btn" href="/main/myWorkAssignment">งานของฉัน</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-btn" href="/main/myWorkHistory">ประวัติการทำงานของฉัน</a>
                     </li>
                 </ul>
             </div>
@@ -66,11 +69,14 @@
                 <li class="report-item py-3">• ชื่อปัญหา (สถานะ)</li>
                 <li class="report-item py-3">• ชื่อปัญหา (สถานะ)</li> -->
             </ul>
-            <button class="btn btn-logout">logout</button>
+            <form id="logoutForm" action="/logout" method="POST" class="position-absolute top-4 end-4">
+                <button class="btn btn-logout">logout</button>
+            </form>
         </div>
     </div>
 
 
+    <!-- Problem Detail Modal -->
     <div class="modal fade" id="problemDetailModal" tabindex="-1" aria-labelledby="problemDetailModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content modal-custom">
@@ -100,13 +106,13 @@
                             <div class="col-md-6">
                                 <label class="status-label">สถานะงาน :</label>
                                 <div class="status-value">
-                                    <span class="badge status-badge-large status-pending">รอดำเนินการ</span>
+                                    <span class="badge status-badge-large status-pending" id="problemStatus"></span>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <label class="status-label">Priority :</label>
                                 <div class="status-value">
-                                    <span class="badge priority-badge-large priority-high">สูง</span>
+                                    <span class="badge priority-badge-large priority-high" id="problemPriority"></span>
                                 </div>
                             </div>
                         </div>
@@ -125,19 +131,19 @@
                         <div class="info-grid">
                             <div class="info-item">
                                 <span class="info-label"><i class="fas fa-calendar me-2"></i>วันที่สร้าง:</span>
-                                <span class="info-value">11/10/2025 10:30</span>
+                                <span class="info-value" id="createDate"></span>
                             </div>
                             <div class="info-item">
                                 <span class="info-label"><i class="fas fa-user me-2"></i>ผู้สร้าง:</span>
-                                <span class="info-value">นายสมชาย ใจดี</span>
+                                <span class="info-value" id="creater"></span>
                             </div>
                             <div class="info-item">
                                 <span class="info-label"><i class="fas fa-building me-2"></i>แผนก:</span>
-                                <span class="info-value">IT Support</span>
+                                <span class="info-value" id="creadtedByDepartment"></span>
                             </div>
                             <div class="info-item">
                                 <span class="info-label"><i class="fas fa-map-marker-alt me-2"></i>สถานที่:</span>
-                                <span class="info-value">อาคาร A ชั้น 3</span>
+                                <span class="info-value" id="createdLocation"></span>
                             </div>
                         </div>
                     </div>

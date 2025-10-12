@@ -6,6 +6,12 @@ import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+export const logout = (req, res) => {
+  req.session.destroy(() => {
+    res.redirect("/");
+  });
+}
+
 export const login = async (req, res) => {
   const { email, password } = req.body;
   console.log("email : " ,email);
@@ -69,5 +75,5 @@ export const changePassword = async (req, res) => {
   const {rows} = await pool.query(q,[confirm_password, req.session.user.usersid]);
   req.session.user.ispasswordchange = true;
   console.log('ข้อมูล Session User:', req.user);
-  return res.redirect("/home");
+  return res.redirect("/main");
 };

@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (passwordInput.value !== confirmPasswordInput.value) {
                 errorDiv.textContent = 'รหัสผ่านทั้งสองช่องไม่ตรงกัน';
                 errorDiv.style.color = 'red';
-                event.preventDefault(); 
+                event.preventDefault();  // ป้องกันการส่งฟอร์มแล้วโหลดหน้าใหม่
             } else {
                 errorDiv.textContent = '';
             }
@@ -63,19 +63,20 @@ document.addEventListener('DOMContentLoaded', function() {
         const reportBox = e.target.closest('#reportBox_lastest');
         
         if (li && reportBox) {
-            console.log('คลิกที่ li!');
-            console.log('li element:', li);
-            console.log('dataset:', li.dataset);
             
             const problemLastestData = {
                 problemid: li.dataset.problemid,
                 title: li.dataset.title,
                 detail: li.dataset.detail,
                 status: li.dataset.status,
-                priority: li.dataset.priority
+                priority: li.dataset.priority,
+                createDate : li.dataset.createDate,
+                creater : li.dataset.creater,
+                creadtedByDepartment : li.dataset.creadtedByDepartment,
+                createdLocation : li.dataset.createdLocation
             };
             
-            console.log('เปิด modal จาก reportBox:', problemLastestData);
+            
             
             // เช็คว่ามีข้อมูลจริงหรือไม่
             if (problemLastestData.title && problemLastestData.title !== '-') {
@@ -111,13 +112,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 title: cells[3]?.textContent.trim() || 'ไม่มีชื่อ',
                 detail: cells[5]?.textContent.trim() || 'ไม่มีรายละเอียด',
                 status: cells[7]?.textContent.trim() || 'ไม่ระบุ',
-                priority: cells[8]?.textContent.trim() || 'ไม่ระบุ'
+                priority: cells[8]?.textContent.trim() || 'ไม่ระบุ',
+                createDate : cells[1]?.textContent.trim() || 'ไม่ระบุ',
+                creater : cells[2]?.textContent.trim() || 'ไม่ระบุ',
+                creadtedByDepartment : cells[6]?.textContent.trim() || 'ไม่ระบุ',
+                createdLocation : cells[9]?.textContent.trim() || 'ไม่ระบุ'
             };
             
             console.log('ข้อมูลจากตาราง:', problemData);
             openProblemDetail(problemData);
         }
     });
+
+
+
+    
     
 }); // ปิด DOMContentLoaded
 
@@ -141,7 +150,12 @@ window.openProblemDetail = function(problemData) {
     const detailElement = document.getElementById('problemDetail');
     const statusElement = document.getElementById('problemStatus');
     const priorityElement = document.getElementById('problemPriority');
-    
+    const createDateElement = document.getElementById('createDate');
+    const createrElement = document.getElementById('creater');
+    const creadtedByDepartmentElement = document.getElementById('creadtedByDepartment');
+    const createdLocationElement = document.getElementById('createdLocation');
+
+
     if (titleElement) {
         titleElement.innerHTML = '<i class="fas fa-info-circle me-2"></i>' + 
                                  (problemData.title || 'ชื่องาน');
@@ -154,7 +168,15 @@ window.openProblemDetail = function(problemData) {
         statusElement.textContent = problemData.status || '-';
     if (priorityElement) 
         priorityElement.textContent = problemData.priority || '-';
-    
+    if (createDateElement)
+        createDateElement.textContent = problemData.createDate || '-';
+    if (createrElement)
+        createrElement.textContent = problemData.creater || '-';
+    if (creadtedByDepartmentElement)
+        creadtedByDepartmentElement.textContent = problemData.creadtedByDepartment || '-';
+    if (createdLocationElement)
+        createdLocationElement.textContent = problemData.createdLocation || '-';
+
     // เปิด Modal
     modal.show();
 };

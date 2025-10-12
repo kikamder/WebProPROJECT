@@ -2,8 +2,8 @@
 import express from "express";
 import bodyParser from "body-parser";
 import { getUsers, getUser} from "../controllers/usersController.js";
-import { getProblemlist ,getProblemlastest} from "../controllers/problemController.js";
-import { changePassword, login } from "../controllers/authController.js";
+import { getProblemlist ,getProblemlastest, getMyWorkAssignment ,getMyWorkHistory} from "../controllers/problemController.js";
+import { changePassword, login , logout} from "../controllers/authController.js";
 import { dirname } from "path";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -26,7 +26,7 @@ router.get("/login", redirectIfAuth, (req, res) => {
 
 router.post("/login", login)
 router.post("/login/changepassword" , requireAuth,changePassword);
-
+router.post("/logout", logout);
 
 router.get("/main/problemlist", requireAuth, (req, res) => {
   const filePath = path.join(__dirname, "../../public/page/problemTable.html");
@@ -37,17 +37,29 @@ router.get("/main", requireAuth,(req, res) => {
   const filePath = path.join(__dirname, "../../public/page/home.html");
   return res.sendFile(filePath);
 });
+
 router.get("/main/reportProblem", requireAuth,(req, res) => {
   const filePath = path.join(__dirname, "../../public/page/problemForm.html");
   return res.sendFile(filePath);
 });
 
+router.get("/main/myWorkAssignment", requireAuth , (req, res) => {
+  const filePath = path.join(__dirname, "../../public/page/myWorkAssignment.html");
+  return res.sendFile(filePath);
+});
+
+router.get("/main/myWorkHistory", requireAuth , (req, res) => {
+  const filePath = path.join(__dirname, "../../public/page/myWorkHistory.html");
+  return res.sendFile(filePath);
+});
+
+
 router.get("/main/data",requireAuth, getUser);
 router.get("/main/problemlist/data", requireAuth, getProblemlist);
 
-router.get("/main/problemlastest/data", getProblemlastest , (req, res) => {
 
-});
-
+router.get("/main/myWorkHistory/data",requireAuth, getMyWorkHistory);
+router.get("/main/myWorkAssignment/data",requireAuth, getMyWorkAssignment);
+router.get("/main/problemlastest/data",requireAuth, getProblemlastest);
 
 export default router;
