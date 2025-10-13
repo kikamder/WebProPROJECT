@@ -16,7 +16,7 @@ export const requireAuth = (req, res, next) => {
 
 export const redirectIfAuth = (req, res, next) => {
   if (req.session.user) {
-    return res.redirect('/home');
+    return res.redirect('/main');
   }
   next(); // ถ้ายังไม่ล็อกอิน ให้ผ่านไปได้ (เพื่อให้เห็นหน้าฟอร์ม)
 };
@@ -54,7 +54,7 @@ export const sessionMiddleware = session({
 export const attachUser = (req, res, next) => {
   if (req.session && req.session.user) {
     req.user = req.session.user;
-    
+
   }
   next();
 };
