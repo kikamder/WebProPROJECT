@@ -57,74 +57,140 @@ document.addEventListener('DOMContentLoaded', function() {
     // 3. Click Event - Table & List
     // ===================================
     document.addEventListener('click', function(e) {
-        
-        // === เช็ค li ก่อน (สำหรับ reportBox) ===
+            
+            // === เช็ค li ก่อน (สำหรับ reportBox) ===
         const li = e.target.closest('li.report-item');
         const reportBox = e.target.closest('#reportBox_lastest');
-        
+
         if (li && reportBox) {
-            
             const problemLastestData = {
-                problemid: li.dataset.problemid,
+                id: li.dataset.id,
                 title: li.dataset.title,
-                detail: li.dataset.detail,
+                description: li.dataset.description,
                 status: li.dataset.status,
                 priority: li.dataset.priority,
-                createDate : li.dataset.createDate,
-                creater : li.dataset.creater,
-                creadtedByDepartment : li.dataset.creadtedByDepartment,
-                createdLocation : li.dataset.createdLocation
+                createat: li.dataset.createat,
+                createby: li.dataset.createby,
+                department: li.dataset.department,
+                location: li.dataset.location
             };
             
-            
-            
-            // เช็คว่ามีข้อมูลจริงหรือไม่
             if (problemLastestData.title && problemLastestData.title !== '-') {
                 openProblemDetail(problemLastestData);
             } else {
                 console.warn('ไม่มีข้อมูลใน dataset');
             }
-            return; // หยุดการทำงาน
+            return; // จบเคส li
         }
-        
+
         // === เช็ค td (สำหรับตาราง) ===
         const td = e.target.closest('td');
-        
-        if (!td) return; // ถ้าไม่ใช่ td และไม่ใช่ li ก็ออกไป
-        
-        const row = td.parentElement;
-        
-        // ตรวจสอบว่าอยู่ใน TR จริงๆ
-        if (row.tagName !== 'TR') return;
-        
+        if (!td) return;
+
+        const row = td.closest('tr');
+        if (!row) return;
+
+        // หา table ที่ td นี้อยู่ในนั้น
+        const table = td.closest('table');
+        if (!table) return;
+
+        // หา <th id="th_description"> ภายในตารางนั้นโดยเฉพาะ
+        const descriptionHeader = table.querySelector('th#th_description');
+        if (!descriptionHeader) return; // ถ้าไม่มีคอลัมน์นี้ก็ข้ามไปเลย
+
+        // หา index ของคอลัมน์ description ภายในตารางนั้น
+        const headers = Array.from(descriptionHeader.parentElement.children);
+        const descriptionColumnIndex = headers.indexOf(descriptionHeader);
+
+        // หาว่าคลิกอยู่คอลัมน์ไหน
         const cells = Array.from(row.children);
         const columnIndex = cells.indexOf(td);
-        
-        // ถ้าเป็นคอลัมน์ที่ 5 (index = 5) คือคอลัมน์รายละเอียด
-        if (columnIndex === 5) {
-            // เช็คว่ามีข้อมูลครบหรือไม่
-            if (cells.length < 9) {
-                console.warn('ตารางมีคอลัมน์ไม่ครบ');
-                return;
-            }
+
+        // ถ้าคลิกในคอลัมน์รายละเอียด
+        if (columnIndex === descriptionColumnIndex) {
+            // สร้าง object problemData โดยอิงจาก id ของ <th>
+            const data = {};
+            headers.forEach((header, idx) => {
+                const id = header.id?.replace(/^th_/, ''); // เช่น 'th_title' -> 'title'
+                if (id){
+                     data[id] = cells[idx]?.textContent.trim() || '';
+                }
+                
+                
+            });
             
-            const problemData = {
-                title: cells[3]?.textContent.trim() || 'ไม่มีชื่อ',
-                detail: cells[5]?.textContent.trim() || 'ไม่มีรายละเอียด',
-                status: cells[7]?.textContent.trim() || 'ไม่ระบุ',
-                priority: cells[8]?.textContent.trim() || 'ไม่ระบุ',
-                createDate : cells[1]?.textContent.trim() || 'ไม่ระบุ',
-                creater : cells[2]?.textContent.trim() || 'ไม่ระบุ',
-                creadtedByDepartment : cells[6]?.textContent.trim() || 'ไม่ระบุ',
-                createdLocation : cells[9]?.textContent.trim() || 'ไม่ระบุ'
-            };
+            const createbyHeader = table.querySelector('th#th_createby');
+
+                // ถ้าไม่มี header 'th_createby'
+             if (!createbyHeader) {
+                data.createby = row.dataset.createby || '-';
+             }           
+
             
-            console.log('ข้อมูลจากตาราง:', problemData);
-            openProblemDetail(problemData);
+          //  data.createby = td.closest("tr")?.dataset.createby || '-';
+            console.log('ข้อมูลจากตาราง:', data);
+            console.log('ข้อมูล createby:', data.createby);
+            openProblemDetail(data);
         }
     });
 
 
+  const attachBtn = document.getElementById("attachBtn");
+  const fileInput = document.getElementById("fileInput");
+  const previewArea = document.getElementById("previewArea");
+  if(attachBtn && fileInput && previewArea){
+  // ====================================================
+  // =========== เมื่อคลิกปุ่ม attach → เปิดเลือกไฟล์ ===========
+  // ====================================================
+  attachBtn.addEventListener("click", () => fileInput.click());
+
+  // เมื่อผู้ใช้เลือกไฟล์
+  fileInput.addEventListener("change", (event) => {
+    const files = Array.from(event.target.files);
+    previewArea.innerHTML = ""; // เคลียร์ preview เดิม
+
+    files.forEach(file => {
+      const fileType = file.type;
+      const fileBox = document.createElement("div");
+      fileBox.classList.add("preview-box");
+
+      // ถ้าเป็นรูป (jpg, png)
+      if (fileType.startsWith("image/")) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = document.createElement("img");
+          img.src = e.target.result;
+          img.alt = file.name;
+          img.classList.add("preview-thumb");
+
+          const name = document.createElement("p");
+          name.textContent = file.name;
+          name.classList.add("preview-name");
+
+          fileBox.appendChild(img);
+          fileBox.appendChild(name);
+          previewArea.appendChild(fileBox);
+        };
+        reader.readAsDataURL(file);
+      }
+      // ถ้าเป็น PDF
+      else if (fileType === "application/pdf") {
+        const icon = document.createElement("div");
+        icon.classList.add("pdf-icon");
+        icon.textContent = "📄";
+
+        const name = document.createElement("p");
+        name.textContent = file.name;
+        name.classList.add("preview-name");
+
+        fileBox.appendChild(icon);
+        fileBox.appendChild(name);
+        previewArea.appendChild(fileBox);
+      }
+    });
+  });
+
+    }
 
     
     
@@ -163,20 +229,22 @@ window.openProblemDetail = function(problemData) {
     
     // แสดงข้อมูลอื่นๆ ด้วย
     if (detailElement) 
-        detailElement.textContent = problemData.detail || '-';
+        detailElement.textContent = problemData.description || '-';
     if (statusElement) 
         statusElement.textContent = problemData.status || '-';
     if (priorityElement) 
         priorityElement.textContent = problemData.priority || '-';
     if (createDateElement)
-        createDateElement.textContent = problemData.createDate || '-';
+        createDateElement.textContent = problemData.createat || '-';
     if (createrElement)
-        createrElement.textContent = problemData.creater || '-';
+        createrElement.textContent = problemData.createby || '-';
+
     if (creadtedByDepartmentElement)
-        creadtedByDepartmentElement.textContent = problemData.creadtedByDepartment || '-';
+        creadtedByDepartmentElement.textContent = problemData.department || '-';
     if (createdLocationElement)
-        createdLocationElement.textContent = problemData.createdLocation || '-';
+        createdLocationElement.textContent = problemData.location || '-';
 
     // เปิด Modal
     modal.show();
 };
+

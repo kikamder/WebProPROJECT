@@ -619,12 +619,12 @@ body {
     background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
 }
 
-.table-custom tbody td:nth-child(6) {
+.table-custom tbody td.col-description {
     cursor: pointer;
     transition: background-color 0.2s ease;
 }
 
-.table-custom tbody td:nth-child(6):hover {
+.table-custom tbody td.col-description:hover {
     background-color: #e3f2fd;
 }
 

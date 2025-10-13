@@ -2,12 +2,15 @@
 import express from "express";
 import bodyParser from "body-parser";
 import { getUsers, getUser} from "../controllers/usersController.js";
-import { getProblemlist ,getProblemlastest, getMyWorkAssignment ,getMyWorkHistory} from "../controllers/problemController.js";
+import { getProblemlist ,getProblemlastest, getMyWorkAssignment ,getMyWorkHistory, addProblem, checkSession, getCategory, getPriority, getDepartment} from "../controllers/problemController.js";
 import { changePassword, login , logout} from "../controllers/authController.js";
 import { dirname } from "path";
 import path from "path";
 import { fileURLToPath } from "url";
 import { requireAuth , authGuard , sessionMiddleware , attachUser, redirectIfAuth} from "../middlewares/auth.js";
+import pool from "../dbConfig/db.js";
+import { get } from "http";
+
 const router = express.Router();
 
 
@@ -61,5 +64,23 @@ router.get("/main/problemlist/data", requireAuth, getProblemlist);
 router.get("/main/myWorkHistory/data",requireAuth, getMyWorkHistory);
 router.get("/main/myWorkAssignment/data",requireAuth, getMyWorkAssignment);
 router.get("/main/problemlastest/data",requireAuth, getProblemlastest);
+
+
+router.get("/api/check-session", requireAuth, checkSession);
+
+// GET categories
+router.get("/main/category",requireAuth,getCategory);
+
+//GET departments
+router.get("/main/department",requireAuth,getDepartment);
+
+//GET priority
+router.get("/main/priority" ,requireAuth,getPriority); 
+
+// POST /api/add-problem
+router.post("/add-problem", requireAuth, addProblem);
+
+
+
 
 export default router;

@@ -12,7 +12,7 @@ export const getProblemlist = async (req, res) =>  {
         p.description,
         p.createat,
         p.location,
-        u.firstname AS createdby,
+        CONCAT (u.firstname, ' ', u.lastname) AS createby,
         c.categoryname,
         s.statusstate,
         d.departmentname,
@@ -24,7 +24,8 @@ export const getProblemlist = async (req, res) =>  {
       JOIN Status s ON p.statusid = s.statusid
       JOIN Department d ON p.departmentid = d.departmentid
       JOIN ServiceLevelAgreement sla ON p.priorityid = sla.priorityid
-      ORDER BY p.problemid ASC;`);
+      WHERE p.statusid != 5
+      ORDER BY p.problemid DESC;`);
 
     res.json(result.rows);
   } catch (err) {
@@ -38,13 +39,26 @@ export const getProblemlastest = async (req, res) =>  {
   
   try {
     const result = await pool.query(`
-      SELECT
+      SELECT 
         p.problemid,
         p.title,
-        s.statusstate
+        p.description,
+        p.description,
+        p.createat,
+        p.location,
+        CONCAT (u.firstname, ' ', u.lastname) AS createby,
+        c.categoryname,
+        s.statusstate,
+        d.departmentname,
+        sla.prioritylevel,
+        p.comment
       FROM Problem p
+      JOIN Users u ON p.createby = u.usersid
+      JOIN Category c ON p.categoryid = c.categoryid
       JOIN Status s ON p.statusid = s.statusid
-	    WHERE p.createby = $1
+      JOIN Department d ON p.departmentid = d.departmentid
+      JOIN ServiceLevelAgreement sla ON p.priorityid = sla.priorityid
+      WHERE p.createby = $1
       ORDER BY p.problemid DESC
       LIMIT 3;
     ` , [req.session.user.usersid]);
@@ -58,11 +72,12 @@ export const getProblemlastest = async (req, res) =>  {
 export const getMyWorkAssignment = async (req, res) =>  {
   try {
       const result = await pool.query(`
-      SELECT
-        p.problemid,
+      select 
+		p.problemid,
         p.createat,
         p.title,
         c.categoryname,
+        CONCAT (u2.firstname, ' ', u2.lastname) AS createby,
         p.description,
         d.departmentname,
         s.statusstate,
@@ -78,9 +93,10 @@ export const getMyWorkAssignment = async (req, res) =>  {
       join category c on p.categoryid = c.categoryid
       join servicelevelagreement sla on p.priorityid = sla.priorityid
       join users u on u.usersid = wk.usersid
+	    join users u2 on p.createby = u2.usersid
      
-      WHERE wk.usersid = $1 AND p.statusid != 5
-      ORDER BY p.problemid ASC;
+      WHERE wk.usersid = $1 AND s.statusid != 5
+      ORDER BY p.problemid DESC;
       ;`, [req.session.user.usersid]);
       res.json(result.rows);
   } catch (err) {
@@ -92,11 +108,12 @@ export const getMyWorkAssignment = async (req, res) =>  {
 export const getMyWorkHistory = async (req, res) =>  {
   try {
       const result = await pool.query(`
-      SELECT
-        p.problemid,
+      select 
+		p.problemid,
         p.createat,
         p.title,
         c.categoryname,
+        CONCAT (u2.firstname, ' ', u2.lastname) AS createby,
         p.description,
         d.departmentname,
         s.statusstate,
@@ -112,9 +129,10 @@ export const getMyWorkHistory = async (req, res) =>  {
       join category c on p.categoryid = c.categoryid
       join servicelevelagreement sla on p.priorityid = sla.priorityid
       join users u on u.usersid = wk.usersid
+	    join users u2 on p.createby = u2.usersid
      
       WHERE wk.usersid = $1
-      ORDER BY p.problemid ASC;
+      ORDER BY p.problemid DESC;
       ;`, [req.session.user.usersid]);
       res.json(result.rows);
   } catch (err) {
@@ -123,3 +141,63 @@ export const getMyWorkHistory = async (req, res) =>  {
   }
 };
 
+export const addProblem = async (req, res) => {
+
+  const { title, description, categoryid, statusid, departmentid, priorityid, location, comment } = req.body;
+  const createby = req.session.user.usersid; // ดึงจาก session
+  const createat = new Date();// เวลาปัจจุบัน
+  try {
+    await pool.query(
+    `INSERT INTO Problem
+    (title, description, createby, categoryid, createat, statusid, departmentid, priorityid, location, comment)
+    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)`,
+    [title, description, createby, categoryid, createat, statusid, departmentid, priorityid, location, comment]
+  );
+
+    res.json({ success: true });
+  } catch(err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Database error" });
+  } 
+
+};
+
+export const checkSession = (req, res) => {
+  if (req.session && req.session.user) {
+      return res.json({ loggedIn: true, user: req.session.user });
+  }
+    res.json({ loggedIn: false });
+}
+
+export const getCategory = async (req, res) => {
+   try {
+    const result = await pool.query("SELECT categoryid, categoryname FROM category");
+      console.log(result.rows);
+    res.json(result.rows);
+  } catch (err) {
+      console.error(err);
+    res.status(500).json({ error: "เกิดข้อผิดพลาด" });
+  }
+};
+
+export const getDepartment = async (req, res) => {
+  try {
+    const result = await pool.query("SELECT departmentid, departmentname FROM department");
+      console.log(result.rows);
+    res.json(result.rows);
+  } catch (err) {
+      console.error(err);
+    res.status(500).json({ error: "เกิดข้อผิดพลาด" });
+  }
+};
+
+export const getPriority = async (req, res) => {
+  try {
+      const result = await pool.query("SELECT priorityid, prioritylevel FROM servicelevelagreement");
+        console.log(result.rows);
+      res.json(result.rows);
+    } catch (err) {
+        console.error(err);
+      res.status(500).json({ error: "เกิดข้อผิดพลาด" });
+    }
+};
