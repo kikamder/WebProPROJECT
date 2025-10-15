@@ -2,7 +2,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import { getUsers, getUser} from "../controllers/usersController.js";
-import { getProblemlist ,getProblemlastest, getMyWorkAssignment ,getMyWorkHistory, addProblem, checkSession, getCategory, getPriority, getDepartment} from "../controllers/problemController.js";
+import { cancelWorkAssignment,getProblemlist ,getProblemlastest, getMyWorkAssignment ,getMyWorkHistory, addProblem, checkSession, getCategory, getPriority, getDepartment,acceptWorkAssignment} from "../controllers/problemController.js";
 import { changePassword, login , logout} from "../controllers/authController.js";
 import { dirname } from "path";
 import path from "path";
@@ -79,6 +79,12 @@ router.get("/main/priority" ,requireAuth,getPriority);
 
 // POST /api/add-problem
 router.post("/add-problem", requireAuth, addProblem);
+
+
+
+router.post("/main/problem/accept/:id", requireAuth,acceptWorkAssignment);
+router.post("/main/problem/cancel/:id", requireAuth,cancelWorkAssignment);
+  
 
 
 

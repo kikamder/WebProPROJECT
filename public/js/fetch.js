@@ -9,6 +9,8 @@ document.addEventListener('DOMContentLoaded',async () => {
         
         data.forEach(row => {
           const tr = document.createElement("tr");
+          tr.dataset.assignat = row.assignat || "-";
+
           tr.innerHTML = `
             <td>${row.problemid}</td>
             <td>${new Date(row.createat).toLocaleString("th-TH")}</td>
@@ -143,9 +145,13 @@ document.addEventListener('DOMContentLoaded',async () => {
         return res.json();
       })
       .then(data => {
+        const lastestproblem = document.getElementById("lastestproblem");
         const el = document.getElementById("firstname");
         if (!el) return;
-
+        if(data.roleid == 1) lastestproblem.textContent = "รายการปัญหาที่แจ้งล่าสุด";
+        if(data.roleid == 2) lastestproblem.textContent = "รายการปัญหาที่เข้ามาล่าสุด";
+        if(data.roleid == 3) lastestproblem.textContent = "รายการปัญหาที่รับงานล่าสุด";
+        
         const name = (data && (data.firstname || data.lastname))
         ? `${data.firstname || ''} ${data.lastname || ''}`.trim() // รวมชื่อและนามสกุล และตัดช่องว่างส่วนเกินออก
         : "ไม่ทราบชื่อ";

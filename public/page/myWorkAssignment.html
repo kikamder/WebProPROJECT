@@ -77,7 +77,7 @@
                 <table class="table table-custom">
                     <thead class="table-header sticky-top">
                         <tr>
-                            <th style="min-width: 80px;" id="th_id">ID</th>
+                            <th style="min-width: 80px;"  id="th_problemid">ID</th>
                             <th style="min-width: 130px;" id="th_createat">วันที่สร้าง</th>
                             <th style="min-width: 200px;" id="th_title">ชื่อปัญหา</th>
                             <th style="min-width: 130px;" id="th_category">หมวดหมู่</th>
@@ -163,10 +163,20 @@
 
                     <!-- ปุ่มเลือกรับงาน -->
                     <div class="action-section">
-                        <button class="btn btn-accept-work">
+                        
+                        <button type="button" class="btn btn-cancle-work" id="workCancelbtn">
                             <i class="fas fa-hand-pointer me-2"></i>
-                            คลิกเพื่อรับงานครับ<br>เมื่อ : เวลา
+                            ยกเลิกงาน
                         </button>
+                        <button type="button" class="btn btn-edit-work" id="workUpdatebtn">
+                            <i class="fas fa-hand-pointer me-2"></i>
+                            อัปเดตงาน
+                        </button>
+                        <button type="button" class="btn btn-finish-work" id="workFinishbtn">
+                            <i class="fas fa-hand-pointer me-2"></i>
+                            เสร็จสิ้นงาน
+                        </button>
+                    
                     </div>
 
                     <!-- พื้นที่ Scrollable -->

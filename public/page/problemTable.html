@@ -77,7 +77,7 @@
                 <table class="table table-custom">
                     <thead class="table-header sticky-top">
                         <tr>
-                            <th style="min-width: 80px;" id="th_id">ID</th>
+                            <th style="min-width: 80px;" id="th_problemid">ID</th>
                             <th style="min-width: 130px;" id="th_createat">วันที่สร้าง</th>
                             <th style="min-width: 150px;" id="th_createby">ผู้สร้าง</th>
                             <th style="min-width: 200px;" id="th_title">ชื่อปัญหา</th>
@@ -88,6 +88,7 @@
                             <th style="min-width: 150px;" id="th_priority">ระดับความสำคัญ</th>
                             <th style="min-width: 150px;" id="th_location">สถานที่</th>
                             <th style="min-width: 100px;" id="th_comment">Comment</th>
+                            
                         </tr>
                     </thead>
                     <tbody id="problemTable">
@@ -162,32 +163,39 @@
                     </div>
 
                     <!-- ปุ่มเลือกรับงาน -->
-                    <div class="action-section">
-                        <button class="btn btn-accept-work">
+                    <div class="action-section ">
+                        <button type="button" class="btn btn-accept-work jus" id="acceptButton">
                             <i class="fas fa-hand-pointer me-2"></i>
-                            คลิกเพื่อรับงานครับ<br>เมื่อ : เวลา
+                            รับงาน
                         </button>
                     </div>
 
                     <!-- พื้นที่ Scrollable -->
                     <div class="scrollable-content mt-4">
                         <div class="info-grid">
+                            
                             <div class="info-item">
-                                <span class="info-label"><i class="fas fa-calendar me-2"></i>วันที่สร้าง:</span>
+                                <span class="info-label"><i class="fas fa-calendar me-2"></i>วันที่สร้าง :</span>
                                 <span class="info-value" id="createDate"></span>
                             </div>
                             <div class="info-item">
-                                <span class="info-label"><i class="fas fa-user me-2"></i>ผู้สร้าง:</span>
+                                <span class="info-label"><i class="fas fa-user me-2"></i>ผู้สร้าง :</span>
                                 <span class="info-value" id="creater"></span>
                             </div>
                             <div class="info-item">
-                                <span class="info-label"><i class="fas fa-building me-2"></i>แผนก:</span>
+                                <span class="info-label"><i class="fas fa-building me-2"></i>แผนก :</span>
                                 <span class="info-value" id="creadtedByDepartment"></span>
                             </div>
                             <div class="info-item">
-                                <span class="info-label"><i class="fas fa-map-marker-alt me-2"></i>สถานที่:</span>
+                                <span class="info-label"><i class="fas fa-map-marker-alt me-2"></i>สถานที่ :</span>
                                 <span class="info-value" id="createdLocation"></span>
                             </div>
+
+                            <div class="info-item">
+                                <span class="info-label"><i class="fas fa-calendar me-2"></i>มีคนรับงานนี้ครั้งแรกเมื่อ :</span>
+                                <span class="info-value" id="firtassignat"></span>
+                            </div>
+                            
                         </div>
                     </div>
                 </div>

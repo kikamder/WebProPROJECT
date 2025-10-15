@@ -118,21 +118,109 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 
             });
+
+            
+            
+            
             
             const createbyHeader = table.querySelector('th#th_createby');
-
+            
                 // ถ้าไม่มี header 'th_createby'
              if (!createbyHeader) {
                 data.createby = row.dataset.createby || '-';
              }           
-
+             
             
           //  data.createby = td.closest("tr")?.dataset.createby || '-';
+             
             console.log('ข้อมูลจากตาราง:', data);
-            console.log('ข้อมูล createby:', data.createby);
+            
             openProblemDetail(data);
         }
+
+
+        
+        
     });
+
+
+    const acceptBtn = document.getElementById("acceptButton");
+        if (acceptBtn) {
+            
+    
+            acceptBtn.addEventListener("click", (e) => {
+                
+                const problemId = e.target.dataset.problemId;
+                
+                isProcessing = true;
+                acceptBtn.disabled = true;
+
+                fetch(`/main/problem/accept/${problemId}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ 
+                        statusid: "2" 
+                        
+                    })
+                })
+                .then(res => res.json())
+                .then(result => {
+                    if (result.success) {
+                        alert("รับงานเรียบร้อย");
+                        
+                    //location.reload(); // โหลดตารางใหม่
+                    } 
+                    if(result.message){
+                        alert(result.message);
+                        
+                    }
+                    
+                })
+
+                .catch(err => {
+                console.error("เกิดข้อผิดพลาด:", err);
+                alert("เกิดข้อผิดพลาด กรุณาลองใหม่");
+                
+                })
+
+                .finally(() => {
+                // เปิดปุ่มใหม่หลังเสร็จสิ้น (ถ้าไม่ reload)
+                isProcessing = false;
+                acceptBtn.disabled = false;
+                });
+                console.log("รับงานหมายเลข:", problemId);
+            });
+            
+        }
+
+    const workCancelbtn = document.getElementById("workCancelbtn");
+    if(workCancelbtn) {
+        workCancelbtn.addEventListener("click", (e) => {
+            
+        if(confirm("คุณต้องการยกเลิกงานนี้ใช่หรือไม่?")){
+                
+                const problemId = e.target.dataset.problemId;
+                console.log("ยกเลิกงานหมายเลข:", problemId);
+                fetch(`/main/problem/cancel/${problemId}`, {
+                    method: "POST",
+                })
+                .then(res => res.json())
+                .then(result => {
+                    if (result.success) {
+                        alert("ยกเลิกงานเรียบร้อย");
+                        location.reload(); // โหลดตารางใหม่
+                    }
+                })
+                .catch(err => {
+                console.error("เกิดข้อผิดพลาด:", err);
+                alert("เกิดข้อผิดพลาด กรุณาลองใหม่");
+                });
+        }else{
+
+        }
+        });
+    }
+
 
 
   const attachBtn = document.getElementById("attachBtn");
@@ -202,14 +290,37 @@ document.addEventListener('DOMContentLoaded', function() {
 // ===================================
 window.openProblemDetail = function(problemData) {
     const modalElement = document.getElementById('problemDetailModal');
+    const acceptBtn = document.getElementById("acceptButton");
+    const workUpdatebtn = document.getElementById("workUpdatebtn");
+    const workCancelbtn = document.getElementById("workCancelbtn");
+    const workFinishbtn = document.getElementById("workFinishbtn"); 
+
+    
     
     // เช็คว่า Modal มีอยู่จริง
     if (!modalElement) {
         console.error('ไม่พบ Modal element');
         return;
     }
+    if (acceptBtn) {
+        acceptBtn.dataset.problemId = problemData.problemid;
+        console.log("acceptBtn", acceptBtn.dataset.problemId);
+    }
+    if(workUpdatebtn && workCancelbtn && workFinishbtn) {
+        workCancelbtn.dataset.problemId = problemData.problemid;
+        workUpdatebtn.dataset.problemId = problemData.problemid;
+        workFinishbtn.dataset.problemId = problemData.problemid;
+        console.log("workCancelbtn", problemData.id);
+    }
+    
+   
+    
+    
+    
     
     const modal = new bootstrap.Modal(modalElement);
+
+    
     
     // อัพเดทข้อมูลใน Modal
     const titleElement = document.getElementById('problemDetailModalLabel');
@@ -245,6 +356,8 @@ window.openProblemDetail = function(problemData) {
         createdLocationElement.textContent = problemData.location || '-';
 
     // เปิด Modal
+    
     modal.show();
 };
+
 

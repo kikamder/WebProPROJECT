@@ -492,7 +492,7 @@ body {
 
 .table-custom tbody tr:hover {
     background-color: #f8f9fa;
-    transform: scale(1.01);
+    transform: scale(0.99);
 }
 
 .table-custom tbody td {
@@ -600,8 +600,8 @@ body {
 
 /* Scrollbar Styling */
 .table-responsive::-webkit-scrollbar {
-    width: 8px;
-    height: 15px;
+    width: 30px;
+    height: 12px;
     
 }
 
@@ -628,7 +628,43 @@ body {
     background-color: #e3f2fd;
 }
 
+.modal-body .action-section {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    height: 60px;
+}
 
+#confirmModal .modal-content {
+    border-radius: 15px;
+}
+
+.icon {
+    font-size: 4rem;
+}
+
+#confirmModal .modal-footer button {
+    min-width: 100px;
+}
+
+
+
+.modal-body .action-section .btn {
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    color: white;
+}
+.modal-body .action-section .btn-finish-work{
+    background: linear-gradient(135deg, #228347 0%, #54eca5 100%);
+    color: rgb(0, 0, 0);
+}
+.modal-body .action-section .btn-edit-work{
+    background: linear-gradient(135deg, #ffee07 0%, #ece954 100%);
+    color: rgb(0, 0, 0);
+}
+.modal-body .action-section .btn-cancle-work{
+    background: linear-gradient(135deg, #ff0707 0%, #ec5454 100%);
+    color: rgb(0, 0, 0);
+}
 
 /* ===== Responsive Styles ===== */
 @media (max-width: 991px) {
@@ -662,4 +698,10 @@ body {
         width: 60px;
         height: 60px;
     }
+    .table-responsive::-webkit-scrollbar {
+    width: 20px;
+    height: 20px;
+    
+}
+    
 }

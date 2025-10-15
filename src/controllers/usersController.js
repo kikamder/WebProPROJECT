@@ -50,7 +50,7 @@ export const getUser = async (req, res) => {
         u.firstname,
         u.lastname,
         t.teamname,
-        r.rolename,
+        r.roleid,
         u.phonenumber,
         u.ispasswordchange
       FROM users u

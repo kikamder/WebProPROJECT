@@ -63,7 +63,7 @@
 
         <!-- Report Section -->
         <div class="report-box p-4 position-relative">
-            <h2 class="mb-4">รายการปัญหาที่แจ้งล่าสุด</h2>
+            <h2 class="mb-4" id="lastestproblem"></h2>
             <ul class="list-unstyled report-list" id="reportBox_lastest">
                 
             </ul>
@@ -118,10 +118,21 @@
 
                     <!-- ปุ่มเลือกรับงาน -->
                     <div class="action-section">
-                        <button class="btn btn-accept-work">
+                        
+                         <button class="btn btn-cancle-work">
                             <i class="fas fa-hand-pointer me-2"></i>
-                            คลิกเพื่อรับงานครับ<br>เมื่อ : เวลา
+                            ยกเลิกงาน
                         </button>
+                        <button class="btn btn-edit-work">
+                            <i class="fas fa-hand-pointer me-2"></i>
+                            แก้ไขงาน
+                        </button>
+                        <button class="btn btn-finish-work">
+                            <i class="fas fa-hand-pointer me-2"></i>
+                            เสร็จสิ้นงาน
+                        </button>
+                        
+                    
                     </div>
 
                     <!-- พื้นที่ Scrollable -->

@@ -17,15 +17,17 @@ export const getProblemlist = async (req, res) =>  {
         s.statusstate,
         d.departmentname,
         sla.prioritylevel,
-        p.comment
-      FROM Problem p
-      JOIN Users u ON p.createby = u.usersid
-      JOIN Category c ON p.categoryid = c.categoryid
-      JOIN Status s ON p.statusid = s.statusid
-      JOIN Department d ON p.departmentid = d.departmentid
-      JOIN ServiceLevelAgreement sla ON p.priorityid = sla.priorityid
-      WHERE p.statusid != 5
-      ORDER BY p.problemid DESC;`);
+        p.comment,
+        wk.assignat
+        FROM Problem p
+        JOIN Users u ON p.createby = u.usersid
+        JOIN Category c ON p.categoryid = c.categoryid
+        JOIN Status s ON p.statusid = s.statusid
+        JOIN Department d ON p.departmentid = d.departmentid
+        JOIN ServiceLevelAgreement sla ON p.priorityid = sla.priorityid
+        LEFT JOIN workassignment wk ON p.problemid = wk.problemid
+        WHERE p.statusid != 5
+        ORDER BY p.problemid DESC;`);
 
     res.json(result.rows);
   } catch (err) {
@@ -201,3 +203,59 @@ export const getPriority = async (req, res) => {
       res.status(500).json({ error: "เกิดข้อผิดพลาด" });
     }
 };
+
+
+export const acceptWorkAssignment = async (req, res) => {
+  const problemid = req.params.id;
+  const status = req.body.statusid; 
+  const workby = req.session.user.usersid; 
+
+  try {
+  await pool.query("BEGIN");
+
+  await pool.query(
+    `UPDATE Problem
+     SET statusid = $1
+     WHERE problemid = $2`,
+    [status, problemid]
+  );
+
+  await pool.query(
+    `INSERT INTO WorkAssignment (problemid, usersid, assignat)
+     VALUES ($1,$2, NOW())
+     `,
+    [problemid, workby]
+  );
+
+  await pool.query("COMMIT");
+
+  res.json({ success: true});
+  } catch (err) {
+    await pool.query("ROLLBACK");
+    
+    if (err.code === '23505') {
+      // 23505 = unique_violation
+      res.status(400).json({ success: false, message: "คุณเคยรับงานนี้แล้ว" });
+    } else {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Database error" });
+    }
+  }
+};
+
+
+export const cancelWorkAssignment = async (req, res) => {
+  const problemid = req.params.id;
+  const deleteby = req.session.user.usersid; 
+  console.log("problemid: ", problemid);
+  try {
+    await pool.query(`
+      delete from workassignment 
+      where usersid = $1 and problemid = $2;
+      `, [deleteby, problemid]);
+      res.json({ success: true });
+  }catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Database error" });
+  }
+}
