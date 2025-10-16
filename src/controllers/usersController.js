@@ -82,3 +82,43 @@ export const getUsers = async (req, res) => {
     res.status(500).json({ error: "ดึงข้อมูล users ไม่ได้" });
   }
 };
+
+export const getTechHome = async (req, res) => {
+  try {
+    const userId = req.user.usersid;
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized: No session" });
+    }
+    const result = await pool.query(`
+      SELECT 
+        (SELECT COUNT(*) 
+        FROM Problem p
+        JOIN workassignment wk ON p.problemid = wk.problemid
+        WHERE wk.usersid = $1
+        ) AS total_work,
+
+        (SELECT COUNT(*) 
+        FROM Problem p
+        JOIN workassignment wk ON p.problemid = wk.problemid
+        WHERE wk.usersid = $1 AND p.statusid = 2
+        ) AS in_progress,
+
+        (SELECT COUNT(*) 
+        FROM Problem p
+        JOIN workassignment wk ON p.problemid = wk.problemid
+        WHERE wk.usersid = $1 AND p.statusid = 3
+        ) AS pending,
+
+        (SELECT COUNT(*) 
+        FROM Problem p
+        JOIN workassignment wk ON p.problemid = wk.problemid
+        WHERE wk.usersid = $1 AND p.statusid = 4
+        ) AS resolved;
+
+    `, [userId]);
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("Database error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};

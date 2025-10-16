@@ -22,6 +22,27 @@ body {
     text-decoration: none;
     color: #333;
 }
+.editsection {
+    display: flex;
+    justify-content: end;
+    display: none;
+    
+    
+}
+.editsection #optionsection {
+    background-color: #7c4dff;
+    color: #fff;
+    border: solid 1px #7c4dff;
+    width: 250px;
+    text-align: center;
+    text-align-last: center;
+    margin-right: 15px;
+    
+}
+.editsection .btn-editconfirm-work {
+    background-color: rgb(27, 255, 27);
+}
+
 
 .user-info-box {
     background-color: rgb(255, 226, 64);
@@ -647,7 +668,9 @@ body {
     min-width: 100px;
 }
 
-
+.scrollable-content {
+    padding: 10px;
+}
 
 .modal-body .action-section .btn {
     background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);

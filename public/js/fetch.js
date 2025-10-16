@@ -139,28 +139,48 @@ document.addEventListener('DOMContentLoaded',async () => {
 
   const page_home_Container = document.getElementById('page-main-content');
   if(page_home_Container) {
-    fetch("/main/data")
+    axios.get("/main/data")
       .then(res => {
-        if (!res.ok) throw new Error("HTTP status " + res.status);
-        return res.json();
-      })
-      .then(data => {
+        const data = res.data;
         const lastestproblem = document.getElementById("lastestproblem");
+        const datasection_home = document.getElementById("datasection_home");
         const el = document.getElementById("firstname");
         if (!el) return;
-        if(data.roleid == 1) lastestproblem.textContent = "รายการปัญหาที่แจ้งล่าสุด";
-        if(data.roleid == 2) lastestproblem.textContent = "รายการปัญหาที่เข้ามาล่าสุด";
-        if(data.roleid == 3) lastestproblem.textContent = "รายการปัญหาที่รับงานล่าสุด";
-        
-        const name = (data && (data.firstname || data.lastname))
-        ? `${data.firstname || ''} ${data.lastname || ''}`.trim() // รวมชื่อและนามสกุล และตัดช่องว่างส่วนเกินออก
-        : "ไม่ทราบชื่อ";
 
-      el.textContent = name;
+        if (data.roleid == 1) {
+          lastestproblem.textContent = "รายการปัญหาที่แจ้งล่าสุด";
+        } 
+        else if (data.roleid == 2) {
+          lastestproblem.textContent = "รายการปัญหาที่เข้ามาล่าสุด";
+        } 
+        else if (data.roleid == 3) {
+          lastestproblem.textContent = "รายการปัญหาที่รับงานล่าสุด";
+
+          axios.get(`/main/data/TechCount`)
+            .then(res2 => {
+              const count = res2.data;
+              console.log(count);
+              datasection_home.textContent =
+                `งานของคุณ : รับงานมาทั้งหมด ${count.total_work} งาน, 
+                อยู่ระหว่างดำเนินการ ${count.in_progress} งาน, 
+                รอดำเนินการ ${count.pending} งาน, 
+                ปิดแล้ว ${count.resolved} งาน`;
+            })
+            .catch(err => {
+              console.error("Error fetching TechCount:", err);
+            });
+        }
+
+        const name = (data.firstname || data.lastname)
+          ? `${data.firstname || ''} ${data.lastname || ''}`.trim()
+          : "ไม่ทราบชื่อ";
+
+        el.textContent = name;
       })
       .catch(err => {
         console.error("Error fetching user data:", err);
-      });
+    });
+  
 
 
   

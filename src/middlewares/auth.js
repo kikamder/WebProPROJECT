@@ -60,11 +60,16 @@ export const attachUser = (req, res, next) => {
 };
 
 
-export const requireRole = (...Role) => {
-  //  if (!req.session || !req.session.user)
-  //     return res.redirect('/');
-   
-  //  if (Role.includes(req.user.rolename)){
-  //     res.send("คุณมีสิทธิ์เข้าใช้งานหน้านี้");
-  //  }
- };
+export const requireRole = (...allowedRoles) => {
+  return (req, res, next) => {
+    if (!req.session || !req.session.user) {
+      return res.redirect('/login');
+    }
+
+    if (allowedRoles.includes(req.user.rolename)) {
+      next();
+    } else {
+      return res.redirect('/main');
+    }
+  };
+};

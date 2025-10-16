@@ -1,15 +1,14 @@
 // src/routes/userRoutes.js
 import express from "express";
 import bodyParser from "body-parser";
-import { getUsers, getUser} from "../controllers/usersController.js";
-import { cancelWorkAssignment,getProblemlist ,getProblemlastest, getMyWorkAssignment ,getMyWorkHistory, addProblem, checkSession, getCategory, getPriority, getDepartment,acceptWorkAssignment} from "../controllers/problemController.js";
-import { changePassword, login , logout} from "../controllers/authController.js";
+import { getUsers, getUser , getTechHome} from "../controllers/usersController.js";
+import {updateProblem ,cancelWorkAssignment,getProblemlist ,getProblemlastest, getMyWorkAssignment ,getMyWorkHistory, addProblem, checkSession, getCategory, getPriority, getDepartment,acceptWorkAssignment} from "../controllers/problemController.js";
+import { changePassword, login , logout } from "../controllers/authController.js";
 import { dirname } from "path";
 import path from "path";
 import { fileURLToPath } from "url";
-import { requireAuth , authGuard , sessionMiddleware , attachUser, redirectIfAuth} from "../middlewares/auth.js";
-import pool from "../dbConfig/db.js";
-import { get } from "http";
+import { requireAuth , authGuard , sessionMiddleware , attachUser, redirectIfAuth ,requireRole} from "../middlewares/auth.js";
+
 
 const router = express.Router();
 
@@ -21,6 +20,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // GET /api/users → ดึงผู้ใช้ทั้งหมด
 router.get("/getUser", getUsers);
+
 router.get("/login", redirectIfAuth, (req, res) => {
   res.sendFile(path.join(__dirname, "../../public/index.html")); 
 });
@@ -84,8 +84,10 @@ router.post("/add-problem", requireAuth, addProblem);
 
 router.post("/main/problem/accept/:id", requireAuth,acceptWorkAssignment);
 router.post("/main/problem/cancel/:id", requireAuth,cancelWorkAssignment);
-  
+router.post("/main/problem/update/:id", requireAuth,updateProblem);
 
+
+router.get("/main/data/TechCount",requireAuth,requireRole('Technician'), getTechHome);
 
 
 

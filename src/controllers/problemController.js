@@ -26,7 +26,7 @@ export const getProblemlist = async (req, res) =>  {
         JOIN Department d ON p.departmentid = d.departmentid
         JOIN ServiceLevelAgreement sla ON p.priorityid = sla.priorityid
         LEFT JOIN workassignment wk ON p.problemid = wk.problemid
-        WHERE p.statusid != 5
+        WHERE p.statusid != 4 AND p.statusid != 5 
         ORDER BY p.problemid DESC;`);
 
     res.json(result.rows);
@@ -75,7 +75,7 @@ export const getMyWorkAssignment = async (req, res) =>  {
   try {
       const result = await pool.query(`
       select 
-		p.problemid,
+		    p.problemid,
         p.createat,
         p.title,
         c.categoryname,
@@ -97,7 +97,7 @@ export const getMyWorkAssignment = async (req, res) =>  {
       join users u on u.usersid = wk.usersid
 	    join users u2 on p.createby = u2.usersid
      
-      WHERE wk.usersid = $1 AND s.statusid != 5
+      WHERE wk.usersid = $1 AND s.statusid != 5 AND s.statusid != 4
       ORDER BY p.problemid DESC;
       ;`, [req.session.user.usersid]);
       res.json(result.rows);
@@ -111,19 +111,19 @@ export const getMyWorkHistory = async (req, res) =>  {
   try {
       const result = await pool.query(`
       select 
-		p.problemid,
-        p.createat,
-        p.title,
-        c.categoryname,
-        CONCAT (u2.firstname, ' ', u2.lastname) AS createby,
-        p.description,
-        d.departmentname,
-        s.statusstate,
-        sla.prioritylevel,
-        p.location,
-        wk.assignat,
-        sla.resolvetime,
-        wk.finishat
+		  p.problemid,
+      p.createat,
+      p.title,
+      c.categoryname,
+      CONCAT (u2.firstname, ' ', u2.lastname) AS createby,
+      p.description,
+      d.departmentname,
+      s.statusstate,
+      sla.prioritylevel,
+      p.location,
+      wk.assignat,
+      sla.resolvetime,
+      wk.finishat
       from problem p
       JOIN department d on p.departmentid = d.departmentid
       join status s on p.statusid = s.statusid
@@ -258,4 +258,18 @@ export const cancelWorkAssignment = async (req, res) => {
     console.error(err);
     res.status(500).json({ success: false, message: "Database error" });
   }
-}
+};
+
+export const updateProblem = async (req, res) => {
+    try{
+      await pool.query(`
+        UPDATE Problem
+        SET statusid = $1
+        WHERE problemid = $2
+      `, [req.body.statusid, req.params.id]);
+      res.json({ success: true });
+    }catch(err){
+      console.error(err);
+      res.status(500).json({ success: false, message: "Database error" });
+    }
+};

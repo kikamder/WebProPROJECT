@@ -1,3 +1,6 @@
+
+
+
 document.addEventListener('DOMContentLoaded', function() {
     
     // ===================================
@@ -199,7 +202,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
         if(confirm("คุณต้องการยกเลิกงานนี้ใช่หรือไม่?")){
                 
-                const problemId = e.target.dataset.problemId;
+                const problemId = e.target.dataset.problemid;
                 console.log("ยกเลิกงานหมายเลข:", problemId);
                 fetch(`/main/problem/cancel/${problemId}`, {
                     method: "POST",
@@ -221,6 +224,67 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    const editsection = document.getElementById("editsectionshow");
+    const editconfirmbtn = document.getElementById("editconfirmbtn");
+    const workUpdatebtn = document.getElementById("workUpdatebtn");
+    const optionsection = document.getElementById("optionsection");
+    if(workUpdatebtn) {
+        let n = 0;
+        workUpdatebtn.addEventListener("click", (e) => {
+            n++;
+            if(n%2==1){
+                 editsection.style.display = "flex";
+            }
+            else{
+                 editsection.style.display = "none";
+                 optionsection.value = "";
+                 
+            }
+        if(n==10) n=0;
+        
+
+        });
+
+        editconfirmbtn.addEventListener("click", (e) => {
+            
+            const problemId =  workUpdatebtn.dataset.problemId;
+            if(optionsection.value >= 2){
+                axios.post(`/main/problem/update/${problemId}`, {
+                    statusid: optionsection.value
+                    })
+                    .then(res => {
+                        if (res.data.success == true) {
+                        alert("อัพเดทสถานะเรียบร้อย");
+                        location.reload(); // โหลดตารางใหม่
+                        }
+                    })
+                    .catch(err => console.error(err));
+            }
+
+
+        });
+
+    }
+    const workFinishbtn = document.getElementById("workFinishbtn");
+    if(workFinishbtn) {
+        workFinishbtn.addEventListener("click", (e) => {
+            if(confirm("คุณต้องการเสร็จสิ้นงานนี้ใช่หรือไม่?")){
+                const problemId = e.target.dataset.problemId;
+                
+                axios.post(`/main/problem/update/${problemId}`, {
+                    statusid: 4
+                    })
+                    .then(res => {
+                        if (res.data.success == true) {
+                        alert("ปิดงานเรียบร้อย");
+                        location.reload(); // โหลดตารางใหม่
+                        }
+                    })
+                    .catch(err => console.error(err));
+                console.log("ปิดงานหมายเลข:", problemId);
+            }
+        });
+    }
 
 
   const attachBtn = document.getElementById("attachBtn");
@@ -303,14 +367,16 @@ window.openProblemDetail = function(problemData) {
         return;
     }
     if (acceptBtn) {
-        acceptBtn.dataset.problemId = problemData.problemid;
+        acceptBtn.dataset.problemId = problemData.problemId;
         console.log("acceptBtn", acceptBtn.dataset.problemId);
     }
     if(workUpdatebtn && workCancelbtn && workFinishbtn) {
-        workCancelbtn.dataset.problemId = problemData.problemid;
-        workUpdatebtn.dataset.problemId = problemData.problemid;
-        workFinishbtn.dataset.problemId = problemData.problemid;
-        console.log("workCancelbtn", problemData.id);
+        workCancelbtn.dataset.problemId = problemData.problemId;
+        workUpdatebtn.dataset.problemId = problemData.problemId;
+        workFinishbtn.dataset.problemId = problemData.problemId;
+        console.log("workUpdatebtn", workUpdatebtn.dataset.problemId);
+        console.log("workCancelbtn", workCancelbtn.dataset.problemId);
+        console.log("workFinishbtn", workFinishbtn.dataset.problemId);
     }
     
    
