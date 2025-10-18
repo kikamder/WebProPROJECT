@@ -17,17 +17,16 @@ export const getProblemlist = async (req, res) =>  {
         s.statusstate,
         d.departmentname,
         sla.prioritylevel,
-        p.comment,
-        wk.assignat
+        p.comment
         FROM Problem p
         JOIN Users u ON p.createby = u.usersid
         JOIN Category c ON p.categoryid = c.categoryid
         JOIN Status s ON p.statusid = s.statusid
         JOIN Department d ON p.departmentid = d.departmentid
         JOIN ServiceLevelAgreement sla ON p.priorityid = sla.priorityid
-        LEFT JOIN workassignment wk ON p.problemid = wk.problemid
         WHERE p.statusid != 4 AND p.statusid != 5 
-        ORDER BY p.problemid DESC;`);
+        ORDER BY p.problemid DESC;
+      `);
 
     res.json(result.rows);
   } catch (err) {
@@ -71,6 +70,42 @@ export const getProblemlastest = async (req, res) =>  {
   }
 };
 
+export const getLatestWorkAssignment = async (req, res) =>  {
+  
+  try {
+    const result = await pool.query(`
+      SELECT 
+        p.problemid,
+        p.title,
+        p.description,
+        p.description,
+        p.createat,
+        p.location,
+        CONCAT (u.firstname, ' ', u.lastname) AS createby,
+        c.categoryname,
+        s.statusstate,
+        d.departmentname,
+        sla.prioritylevel,
+        p.comment
+      FROM workassignment wk
+	    JOIN problem p on wk.problemid = p.problemid
+      JOIN Users u ON p.createby = u.usersid
+	    Join users u2 on u2.usersid = wk.usersid
+      JOIN Category c ON p.categoryid = c.categoryid
+      JOIN Status s ON p.statusid = s.statusid
+      JOIN Department d ON p.departmentid = d.departmentid
+      JOIN ServiceLevelAgreement sla ON p.priorityid = sla.priorityid
+      WHERE wk.usersid = $1
+      ORDER BY wk.assignat DESC
+      LIMIT 3
+    ` , [req.session.user.usersid]);
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Database error:", err);
+    res.status(500).json({ error: "Database error" });
+  }
+};
+
 export const getMyWorkAssignment = async (req, res) =>  {
   try {
       const result = await pool.query(`
@@ -98,7 +133,7 @@ export const getMyWorkAssignment = async (req, res) =>  {
 	    join users u2 on p.createby = u2.usersid
      
       WHERE wk.usersid = $1 AND s.statusid != 5 AND s.statusid != 4
-      ORDER BY p.problemid DESC;
+      ORDER BY wk.assignat DESC;
       ;`, [req.session.user.usersid]);
       res.json(result.rows);
   } catch (err) {
@@ -134,7 +169,7 @@ export const getMyWorkHistory = async (req, res) =>  {
 	    join users u2 on p.createby = u2.usersid
      
       WHERE wk.usersid = $1
-      ORDER BY p.problemid DESC;
+      ORDER BY p.problemid DESC
       ;`, [req.session.user.usersid]);
       res.json(result.rows);
   } catch (err) {
@@ -207,25 +242,35 @@ export const getPriority = async (req, res) => {
 
 export const acceptWorkAssignment = async (req, res) => {
   const problemid = req.params.id;
-  const status = req.body.statusid; 
+  const status = req.body.statusstate; 
   const workby = req.session.user.usersid; 
+
+  
 
   try {
   await pool.query("BEGIN");
+  
+  if(status == 'New / สร้างใหม่') {
+    await pool.query(
+      `UPDATE Problem
+      SET statusid = 2
+      WHERE problemid = $1`,
+      [problemid]
+    );
 
-  await pool.query(
-    `UPDATE Problem
-     SET statusid = $1
-     WHERE problemid = $2`,
-    [status, problemid]
-  );
-
-  await pool.query(
-    `INSERT INTO WorkAssignment (problemid, usersid, assignat)
-     VALUES ($1,$2, NOW())
-     `,
-    [problemid, workby]
-  );
+    await pool.query(`
+      INSERT INTO WorkAssignment (problemid, usersid, assignat)
+      VALUES ($1,$2, NOW())
+      `, [problemid, workby]
+    );
+  } else {
+      await pool.query(
+        `INSERT INTO WorkAssignment (problemid, usersid, assignat)
+        VALUES ($1,$2, NOW())
+        `,
+        [problemid, workby]
+      );
+    }
 
   await pool.query("COMMIT");
 
@@ -262,11 +307,35 @@ export const cancelWorkAssignment = async (req, res) => {
 
 export const updateProblem = async (req, res) => {
     try{
-      await pool.query(`
-        UPDATE Problem
-        SET statusid = $1
-        WHERE problemid = $2
-      `, [req.body.statusid, req.params.id]);
+      
+      const finishat = req.body.finishat; //from finishBtn
+      console.log(finishat);
+      if(finishat){
+        await pool.query(`
+          UPDATE problem p
+          SET statusid = $1
+          FROM workassignment w
+          WHERE p.problemid = w.problemid
+            AND p.problemid = $2;
+        `, [req.body.statusid, req.params.id]);
+
+        await pool.query(`
+          UPDATE workassignment
+          SET finishat = $1
+          WHERE problemid = $2;
+        `, [finishat, req.params.id]);
+
+      } else {
+          await pool.query(`
+          UPDATE Problem
+          SET statusid = $1
+          WHERE problemid = $2
+          `, [req.body.statusid, req.params.id]);
+            
+      }
+      
+      
+
       res.json({ success: true });
     }catch(err){
       console.error(err);

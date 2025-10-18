@@ -49,8 +49,9 @@ export const getUser = async (req, res) => {
       SELECT 
         u.firstname,
         u.lastname,
+        CONCAT(u.firstname ,' ', u.lastname) AS fullname,
         t.teamname,
-        r.roleid,
+        r.rolename,
         u.phonenumber,
         u.ispasswordchange
       FROM users u
@@ -122,3 +123,55 @@ export const getTechHome = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+export const getuserHome = async (req, res) => {
+    const userId = req.user.usersid;
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized: No session" });
+    }
+
+    try {
+      const result = await pool.query(`
+        SELECT 
+          (SELECT COUNT(*) 
+          FROM Problem p
+          JOIN users u on p.createby = u.usersid
+          WHERE p.createby = $1
+          ) AS total_work,
+
+          (SELECT COUNT(*) 
+          FROM Problem p
+          JOIN users u ON p.createby = u.usersid
+          WHERE p.createby = $1 AND p.statusid = 1
+          ) AS newProblem,
+      
+          (SELECT COUNT(*) 
+          FROM Problem p
+          JOIN users u ON p.createby = u.usersid
+          WHERE p.createby = $1 AND p.statusid = 2
+          ) AS in_progress,
+
+          (SELECT COUNT(*) 
+          FROM Problem p
+          JOIN users u ON p.createby = u.usersid
+          WHERE p.createby = $1 AND p.statusid = 3
+          ) AS pending,
+
+          (SELECT COUNT(*) 
+          FROM Problem p
+          JOIN users u ON p.createby = u.usersid
+          WHERE p.createby = $1 AND p.statusid = 4
+          ) AS resolved;
+        `,[userId]);
+        res.json(result.rows[0]);
+
+
+    } catch(error) {
+      console.error("Database error:", error);
+      res.status(500).json({ message: "Server error" });
+    }
+};
+
+export const getadminHome =  (res,req) => {
+
+}

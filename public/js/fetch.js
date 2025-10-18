@@ -1,9 +1,10 @@
+
 document.addEventListener('DOMContentLoaded',async () => {    
     const page_problem_Container = document.getElementById('page-problem-content');
     if(page_problem_Container) {
-    fetch("/main/problemlist/data")
-      .then(res => res.json())
-      .then(data => {
+    axios("/main/problemlist/data")
+      .then(res => {
+        data = res.data;
         const table = document.getElementById("problemTable");
         table.innerHTML = "";
         
@@ -13,7 +14,11 @@ document.addEventListener('DOMContentLoaded',async () => {
 
           tr.innerHTML = `
             <td>${row.problemid}</td>
-            <td>${new Date(row.createat).toLocaleString("th-TH")}</td>
+            <td>${new Date(row.createat).toLocaleString("th-TH", {
+              timeZone: "Asia/Bangkok",
+              dateStyle: "short",
+              timeStyle: "short"
+            })}</td>
             <td>${row.createby || "-"}</td>
             <td>${row.title || "-"}</td>
             <td>${row.categoryname || "-"}</td>
@@ -35,9 +40,9 @@ document.addEventListener('DOMContentLoaded',async () => {
     
   const page_myWorkassignment_content = document.getElementById('page-myWorkassignment-content');
   if(page_myWorkassignment_content) {
-    fetch("/main/myWorkAssignment/data")
-      .then(res => res.json())
-      .then(data => {
+    axios.get("/main/myWorkAssignment/data")
+      .then(res => {
+        data = res.data;
         const table = document.getElementById("myWorkAssignmentTable");
         table.innerHTML = "";
 
@@ -88,9 +93,9 @@ document.addEventListener('DOMContentLoaded',async () => {
 
     const page_myWorkHistory_content = document.getElementById('page-myWorkHistory-content');
     if(page_myWorkHistory_content) {
-      fetch("/main/myWorkHistory/data")
-      .then(res => res.json())
-      .then(data => {
+      axios.get("/main/myWorkHistory/data")
+      .then(res => {
+        data = res.data;
         const table = document.getElementById("myWorkAssignmentHistoryTable");
         
         
@@ -124,7 +129,10 @@ document.addEventListener('DOMContentLoaded',async () => {
             })}</td>
             <td>
               ${row.finishat 
-                ? new Date(row.finishat).toLocaleString("th-TH", { timeZone: "Asia/Bangkok" }) 
+                ? new Date(row.finishat).toLocaleString("th-TH", { 
+                    timeZone: "Asia/Bangkok",
+                    dateStyle: "short",
+                    timeStyle: "short" }) 
                 : "ยังไม่เสร็จ"}
             </td>
           `;
@@ -138,8 +146,8 @@ document.addEventListener('DOMContentLoaded',async () => {
     }
 
   const page_home_Container = document.getElementById('page-main-content');
-  if(page_home_Container) {
-    axios.get("/main/data")
+   if(page_home_Container) {
+    axios.get("/main/users/data")
       .then(res => {
         const data = res.data;
         const lastestproblem = document.getElementById("lastestproblem");
@@ -147,16 +155,30 @@ document.addEventListener('DOMContentLoaded',async () => {
         const el = document.getElementById("firstname");
         if (!el) return;
 
-        if (data.roleid == 1) {
+        if (data.rolename == 'User') {
           lastestproblem.textContent = "รายการปัญหาที่แจ้งล่าสุด";
+          axios.get(`/main/users/userCount/data`)
+            .then(res2 => {
+              const count = res2.data;
+              console.log(count);
+              datasection_home.textContent =
+                `ปัญหาของคุณ : แจ้งปัญหาทั้งหมด ${count.total_work} ปัญหา, 
+                ปัญหาใหม่ ${count.newproblem} ปัญหา ,
+                อยู่ระหว่างดำเนินการ ${count.in_progress} ปัญหา, 
+                รอดำเนินการ ${count.pending} ปัญหา, 
+                แก้ไขแล้ว ${count.resolved} ปัญหา`;
+            })
+            .catch(err => {
+              console.error("Error fetching TechCount:", err);
+            });
         } 
-        else if (data.roleid == 2) {
+        else if (data.rolename == 'Admin') {
           lastestproblem.textContent = "รายการปัญหาที่เข้ามาล่าสุด";
         } 
-        else if (data.roleid == 3) {
+        else if (data.rolename == 'Technician') {
           lastestproblem.textContent = "รายการปัญหาที่รับงานล่าสุด";
 
-          axios.get(`/main/data/TechCount`)
+          axios.get(`/main/users/TechCount/data`)
             .then(res2 => {
               const count = res2.data;
               console.log(count);
@@ -185,113 +207,212 @@ document.addEventListener('DOMContentLoaded',async () => {
 
   
     //fetch and display latest 3 problems in home page
-    fetch("/main/problemlastest/data")
+    axios.get("/main/users/data")
     .then(res => {
-      if (!res.ok) throw new Error("HTTP status " + res.status);
-      return res.json();
-    })
-    .then(data => {
+      data = res.data;
+      if(data.rolename == "User") {
+        axios.get("/main/problemlastest/data")
+        .then(res => {
+          data = res.data;
       
-      const list = document.getElementById("reportBox_lastest");
-      list.innerHTML = "";
+          const list = document.getElementById("reportBox_lastest");
+          list.innerHTML = "";
 
-      if (data.length === 0) {
-        list.innerHTML = '<li class="text-muted py-3">ไม่มีรายการปัญหา</li>';
-        return;
-      }
-      data.forEach(row => {
-        const li = document.createElement("li");
-        li.className = "report-item py-3";
-        li.style.cursor = "pointer";
-        
-        // เก็บข้อมูลทั้งหมดไว้
-        li.dataset.id = row.problemid || '';
-        li.dataset.title = row.title || '-';
-        li.dataset.description = row.description || '-';
-        li.dataset.status = row.statusstate || '-';
-        li.dataset.priority = row.prioritylevel || '-';
-        li.dataset.createat = row.createat || '-';
-        li.dataset.createby = row.createby || '-';
-        li.dataset.department = row.departmentname || '-';
-        li.dataset.location = row.location || '-';
-        console.log(li.dataset);
-        li.innerHTML = `• ${row.title || "-"} <span class="text-muted">   (${row.statusstate})</span>`;
-        list.appendChild(li);
-        
-         
-      });
+          if (data.length === 0) {
+            list.innerHTML = '<li class="text-muted py-3">ไม่มีรายการปัญหา</li>';
+            return;
+          }
+         data.forEach(row => {
+          const li = document.createElement("li");
+          li.className = "report-item py-3";
+          li.style.cursor = "pointer";
+          
+          // เก็บข้อมูลทั้งหมดไว้
+          li.dataset.problemId = row.problemid || '';
+          li.dataset.title = row.title || '-';
+          li.dataset.description = row.description || '-';
+          li.dataset.status = row.statusstate || '-';
+          li.dataset.priority = row.prioritylevel || '-';
+          li.dataset.createat = row.createat || '-';
+          li.dataset.createby = row.createby || '-';
+          li.dataset.department = row.departmentname || '-';
+          li.dataset.location = row.location || '-';
+          console.log(li.dataset);
+          li.innerHTML = `• ${row.title || "-"} <span class="text-muted">   (${row.statusstate})</span>`;
+          list.appendChild(li);
+        });
       
-    })
-    
-    .catch(err => {
+    }).catch(err => {
       console.error("Error fetching latest problems:", err);
       document.getElementById("reportBox_lastest").innerHTML = 
         '<li class="text-danger py-3">เกิดข้อผิดพลาดในการโหลดข้อมูล</li>';
-    });
-
-  }
-
-
-  // ✅ ส่งฟอร์มไป server (มีเฉพาะหน้าที่มีฟอร์มแจ้งปัญหา)
-  const form = document.getElementById("problemForm");
-  if(form){ // ✅ เพิ่มเงื่อนไขเช็คก่อน addEventListener
-    const sessionRes = await fetch("/api/check-session", { credentials: "include" });
-    const sessionData = await sessionRes.json();
-
-    if(!sessionData.loggedIn){
-      alert("ยังไม่ได้ login");
-      return window.location.href = "/";
-    }
-
-    const userId = sessionData.user.usersid; // เอาจาก server session
-
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const data = {
-        title: document.getElementById("problemname").value,
-        description: document.getElementById("description").value,
-        createby: userId,
-        categoryid: document.getElementById("categoryDropdown").value,
-        statusid: 1,
-        departmentid: document.getElementById("departmentDropdown").value,
-        priorityid: document.getElementById("priorityDropdown").value,
-        location: document.getElementById("locationDropdown").value,
-        comment: document.getElementById("comment")?.value || ""
-      };
-
-      const res = await fetch("/add-problem", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-        credentials: "include"
       });
+    }
+    if(data.rolename == "Technician") {
+        axios.get("/main/LatestWorkAssignment/data")
+        .then(res => {
+          data = res.data;
+      
+          const list = document.getElementById("reportBox_lastest");
+          list.innerHTML = "";
 
-      const result = await res.json();
-      if(result.success){
-        alert("ส่งข้อมูลสำเร็จ!");
-        form.reset();
-      } else {
-        alert("เกิดข้อผิดพลาด: " + result.message);
-      }
-    });
+          if (data.length === 0) {
+            list.innerHTML = '<li class="text-muted py-3">ไม่มีรายการปัญหา</li>';
+            return;
+          }
+         data.forEach(row => {
+          const li = document.createElement("li");
+          li.className = "report-item py-3";
+          li.style.cursor = "pointer";
+          
+          // เก็บข้อมูลทั้งหมดไว้
+          li.dataset.problemId = row.problemid || '';
+          li.dataset.title = row.title || '-';
+          li.dataset.description = row.description || '-';
+          li.dataset.status = row.statusstate || '-';
+          li.dataset.priority = row.prioritylevel || '-';
+          li.dataset.createat = row.createat || '-';
+          li.dataset.createby = row.createby || '-';
+          li.dataset.department = row.departmentname || '-';
+          li.dataset.location = row.location || '-';
+          console.log(li.dataset);
+          li.innerHTML = `• ${row.title || "-"} <span class="text-muted">   (${row.statusstate})</span>`;
+          list.appendChild(li);
+        });
+      
+    }).catch(err => {
+      console.error("Error fetching latest problems:", err);
+      document.getElementById("reportBox_lastest").innerHTML = 
+        '<li class="text-danger py-3">เกิดข้อผิดพลาดในการโหลดข้อมูล</li>';
+      });
+    }
+    if(data.rolename == "Admin") {
+        axios.get("/main/problemlastest/data")
+        .then(res => {
+          data = res.data;
+      
+          const list = document.getElementById("reportBox_lastest");
+          list.innerHTML = "";
+
+          if (data.length === 0) {
+            list.innerHTML = '<li class="text-muted py-3">ไม่มีรายการปัญหา</li>';
+            return;
+          }
+         data.forEach(row => {
+          const li = document.createElement("li");
+          li.className = "report-item py-3";
+          li.style.cursor = "pointer";
+          
+          // เก็บข้อมูลทั้งหมดไว้
+          li.dataset.problemId = row.problemid || '';
+          li.dataset.title = row.title || '-';
+          li.dataset.description = row.description || '-';
+          li.dataset.status = row.statusstate || '-';
+          li.dataset.priority = row.prioritylevel || '-';
+          li.dataset.createat = row.createat || '-';
+          li.dataset.createby = row.createby || '-';
+          li.dataset.department = row.departmentname || '-';
+          li.dataset.location = row.location || '-';
+          console.log(li.dataset);
+          li.innerHTML = `• ${row.title || "-"} <span class="text-muted">   (${row.statusstate})</span>`;
+          list.appendChild(li);
+        });
+      
+    }).catch(err => {
+      console.error("Error fetching latest problems:", err);
+      document.getElementById("reportBox_lastest").innerHTML = 
+        '<li class="text-danger py-3">เกิดข้อผิดพลาดในการโหลดข้อมูล</li>';
+      });
+    }
+  }).catch(err => {
+      console.error("Error fetching latest problems:", err);
+      document.getElementById("reportBox_lastest").innerHTML = 
+        '<li class="text-danger py-3">เกิดข้อผิดพลาดในการโหลดข้อมูล</li>';
+      });
+    
+
   }
 
-  // ✅ ดึงข้อมูล dropdown เฉพาะหน้าที่มี element เหล่านั้น
+
+  //ส่งฟอร์มไป server (มีเฉพาะหน้าที่มีฟอร์มแจ้งปัญหา)
+  const form = document.getElementById("problemForm");
+if (form) {
+  const fullname = document.getElementById("fullname");
+
+  axios.get("/api/check-session", { withCredentials: true })
+    .then(sessionRes => {
+      const sessionData = sessionRes.data;
+
+      if (!sessionData.loggedIn) {
+        alert("ยังไม่ได้ login");
+        return (window.location.href = "/");
+      }
+
+      const userId = sessionData.user.usersid; // เอาจาก server session
+      fullname.value = sessionData.user.firstname + " " + sessionData.user.lastname;
+      console.log(sessionData.user.firstname + " " + sessionData.user.lastname);
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const data = {
+          title: document.getElementById("problemname").value,
+          description: document.getElementById("description").value,
+          createby: userId,
+          categoryid: document.getElementById("categoryDropdown").value,
+          statusid: 1,
+          departmentid: document.getElementById("departmentDropdown").value,
+          priorityid: document.getElementById("priorityDropdown").value,
+          location: document.getElementById("locationDropdown").value,
+          comment: document.getElementById("comment")?.value || ""
+        };
+
+        try { 
+          const res = await axios.post("/add-problem", data, {
+            withCredentials: true,
+            headers: { "Content-Type": "application/json" }
+          });
+
+          const result = res.data;
+          if (result.success) {
+            alert("ส่งข้อมูลสำเร็จ!");
+            form.reset();
+            fullname.value = sessionData.user.firstname + " " + sessionData.user.lastname;
+          } else {
+            alert("เกิดข้อผิดพลาด: " + result.message);
+          }
+        } catch (err) { 
+          console.error("Error sending data:", err);
+          alert("เกิดข้อผิดพลาดระหว่างส่งข้อมูล");
+        } 
+      }); 
+    })
+    .catch(err => { 
+      console.error("Error checking session:", err);
+      alert("เกิดข้อผิดพลาดในการตรวจสอบ session");
+    }); 
+}
+    
+  
+    
+    
+
+  //ดึงข้อมูล dropdown เฉพาะหน้าที่มี element เหล่านั้น
   const dropdown = document.getElementById("categoryDropdown");
-  if(dropdown){ // ✅ เพิ่มเช็ค
+  if(dropdown){ 
     let loaded = false; 
     dropdown.addEventListener("click", () => {
       if (loaded) return;
-      fetch("/main/category")
-        .then(res => res.json())
-        .then(data => {
+      axios.get("/main/category")
+        .then(res => {
+          data = res.data
           data.forEach(category => {
             const option = document.createElement("option");
             option.value = category.categoryid;
             option.textContent = category.categoryname;
             dropdown.appendChild(option);
           });
+          
           loaded = true;
         })
         .catch(err => console.error(err));
@@ -299,13 +420,14 @@ document.addEventListener('DOMContentLoaded',async () => {
   }
 
   const dropdowndep = document.getElementById("departmentDropdown");
-  if(dropdowndep){ // ✅ เพิ่มเช็ค
+  if(dropdowndep){ 
     let loadeddep = false;
     dropdowndep.addEventListener("click", () => {
       if (loadeddep) return;
-      fetch("/main/department")
-        .then(res => res.json())
-        .then(data => {
+
+      axios.get("/main/department")
+        .then(res => {
+          data = res.data;
           data.forEach(department => {
             const option = document.createElement("option");
             option.value = department.departmentid;
@@ -319,13 +441,14 @@ document.addEventListener('DOMContentLoaded',async () => {
   }
 
   const dropdownpri = document.getElementById("priorityDropdown");
-  if(dropdownpri){ // ✅ เพิ่มเช็ค
+  if(dropdownpri){ 
     let loadedpri = false;
     dropdownpri.addEventListener("click", () => {
       if (loadedpri) return;
-      fetch("/main/priority")
-        .then(res => res.json())
-        .then(data => {
+
+      axios.get("/main/priority")
+        .then(res => {
+          data = res.data;
           data.forEach(servicelevelagreement => {
             const option = document.createElement("option");
             option.value = servicelevelagreement.priorityid;
@@ -339,4 +462,5 @@ document.addEventListener('DOMContentLoaded',async () => {
   }
  
 });
+
 

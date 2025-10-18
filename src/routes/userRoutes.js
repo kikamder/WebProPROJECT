@@ -1,8 +1,8 @@
 // src/routes/userRoutes.js
 import express from "express";
 import bodyParser from "body-parser";
-import { getUsers, getUser , getTechHome} from "../controllers/usersController.js";
-import {updateProblem ,cancelWorkAssignment,getProblemlist ,getProblemlastest, getMyWorkAssignment ,getMyWorkHistory, addProblem, checkSession, getCategory, getPriority, getDepartment,acceptWorkAssignment} from "../controllers/problemController.js";
+import { getUsers, getUser , getTechHome , getuserHome , getadminHome} from "../controllers/usersController.js";
+import {getLatestWorkAssignment,updateProblem ,cancelWorkAssignment,getProblemlist ,getProblemlastest, getMyWorkAssignment ,getMyWorkHistory, addProblem, checkSession, getCategory, getPriority, getDepartment,acceptWorkAssignment} from "../controllers/problemController.js";
 import { changePassword, login , logout } from "../controllers/authController.js";
 import { dirname } from "path";
 import path from "path";
@@ -46,23 +46,23 @@ router.get("/main/reportProblem", requireAuth,(req, res) => {
   return res.sendFile(filePath);
 });
 
-router.get("/main/myWorkAssignment", requireAuth , (req, res) => {
+router.get("/main/myWorkAssignment",requireRole('Technician'), requireAuth , (req, res) => {
   const filePath = path.join(__dirname, "../../public/page/myWorkAssignment.html");
   return res.sendFile(filePath);
 });
 
-router.get("/main/myWorkHistory", requireAuth , (req, res) => {
+router.get("/main/myWorkHistory", requireAuth ,requireRole('Technician'), (req, res) => {
   const filePath = path.join(__dirname, "../../public/page/myWorkHistory.html");
   return res.sendFile(filePath);
 });
 
 
-router.get("/main/data",requireAuth, getUser);
+router.get("/main/users/data",requireAuth, getUser);
 router.get("/main/problemlist/data", requireAuth, getProblemlist);
 
 
-router.get("/main/myWorkHistory/data",requireAuth, getMyWorkHistory);
-router.get("/main/myWorkAssignment/data",requireAuth, getMyWorkAssignment);
+router.get("/main/myWorkHistory/data",requireAuth,requireRole('Technician'), getMyWorkHistory);
+router.get("/main/myWorkAssignment/data",requireAuth,requireRole('Technician'), getMyWorkAssignment);
 router.get("/main/problemlastest/data",requireAuth, getProblemlastest);
 
 
@@ -82,13 +82,15 @@ router.post("/add-problem", requireAuth, addProblem);
 
 
 
-router.post("/main/problem/accept/:id", requireAuth,acceptWorkAssignment);
-router.post("/main/problem/cancel/:id", requireAuth,cancelWorkAssignment);
-router.post("/main/problem/update/:id", requireAuth,updateProblem);
+router.post("/main/problem/accept/:id", requireAuth,requireRole('Technician'),acceptWorkAssignment);
+router.post("/main/problem/cancel/:id", requireAuth,requireRole('Technician'),cancelWorkAssignment);
+router.post("/main/problem/update/:id", requireAuth,requireRole('Technician'),updateProblem);
 
 
-router.get("/main/data/TechCount",requireAuth,requireRole('Technician'), getTechHome);
+router.get("/main/users/userCount/data",requireAuth,requireRole('User'),getuserHome)
+router.get("/main/users/AdminCount/data",requireAuth,requireRole('Admin'),getadminHome)
+router.get("/main/users/TechCount/data",requireAuth,requireRole('Technician'), getTechHome);
 
-
+router.get("/main/LatestWorkAssignment/data",requireAuth,requireRole('Technician'),getLatestWorkAssignment)
 
 export default router;

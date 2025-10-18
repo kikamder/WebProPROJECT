@@ -21,18 +21,21 @@
             </button>
             
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                <ul class="navbar-nav nav-center">
-                    <li class="nav-item">
-                        <a class="nav-link nav-btn active" href="/main">หน้า Home</a>
+                <ul class="navbar-nav nav-center" >
+                    <li class="nav-item" id="menu-home">
+                        <a class="nav-link nav-btn active" href="/main" >หน้า Home</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link nav-btn" href="/main/problemlist">รวมปัญหาที่แจ้ง</a>
+                    <li class="nav-item" id="menu-totalproblem">
+                        <a class="nav-link nav-btn" href="/main/problemlist" >รวมปัญหาที่แจ้ง</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link nav-btn" href="/main/myWorkAssignment">งานของฉัน</a>
+                    <li class="nav-item" id="menu-mywork">
+                        <a class="nav-link nav-btn" href="/main/myWorkAssignment" >งานของฉัน</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link nav-btn" href="/main/myWorkHistory">ประวัติการทำงานของฉัน</a>
+                    <li class="nav-item" id="menu-myReportedHistory">
+                        <a class="nav-link nav-btn" href="#">ประวัติการแจ้งของฉัน</a>
+                    </li>
+                    <li class="nav-item" id="menu-myworkhistory">
+                        <a class="nav-link nav-btn" href="/main/myWorkHistory" >ประวัติการทำงานของฉัน</a>
                     </li>
                 </ul>
             </div>
@@ -117,22 +120,37 @@
                     </div>
 
                     <!-- ปุ่มเลือกรับงาน -->
-                    <div class="action-section">
+                    <div class="action-section" id="btnWork">
                         
-                         <button class="btn btn-cancle-work">
+                        <button type="button" class="btn btn-cancle-work" id="workCancelbtn">
                             <i class="fas fa-hand-pointer me-2"></i>
                             ยกเลิกงาน
                         </button>
-                        <button class="btn btn-edit-work">
+                        <button type="button" class="btn btn-edit-work" id="workUpdatebtn">
                             <i class="fas fa-hand-pointer me-2"></i>
-                            แก้ไขงาน
+                            อัปเดตงาน
                         </button>
-                        <button class="btn btn-finish-work">
+                        <button type="button" class="btn btn-finish-work" id="workFinishbtn">
                             <i class="fas fa-hand-pointer me-2"></i>
                             เสร็จสิ้นงาน
                         </button>
+
                         
-                    
+                        
+                    </div>
+                    <div class="editsection mb-3 mt-4"  id="editsectionshow" >
+                        
+                    <select id="optionsection" >
+                            <option value="">-- เลือกสถานะ --</option>
+                            <option value="2">กำลังดำเนินการ</option>
+                            <option value="3">รอดำเนินการ</option>
+                            
+                            
+                    </select>
+                        <button type="button" class="btn btn-editconfirm-work" id="editconfirmbtn">
+                            ยืนยัน
+                        </button>
+                        
                     </div>
 
                     <!-- พื้นที่ Scrollable -->

@@ -1,6 +1,3 @@
-
-
-
 document.addEventListener('DOMContentLoaded', function() {
     
     // ===================================
@@ -67,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (li && reportBox) {
             const problemLastestData = {
-                id: li.dataset.id,
+                problemId: li.dataset.problemId,
                 title: li.dataset.title,
                 description: li.dataset.description,
                 status: li.dataset.status,
@@ -79,6 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
             };
             
             if (problemLastestData.title && problemLastestData.title !== '-') {
+
                 openProblemDetail(problemLastestData);
             } else {
                 console.warn('ไม่มีข้อมูลใน dataset');
@@ -154,43 +152,36 @@ document.addEventListener('DOMContentLoaded', function() {
             acceptBtn.addEventListener("click", (e) => {
                 
                 const problemId = e.target.dataset.problemId;
-                
+                const statusstate = e.target.dataset.status;
                 isProcessing = true;
                 acceptBtn.disabled = true;
 
-                fetch(`/main/problem/accept/${problemId}`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ 
-                        statusid: "2" 
+                axios.post(`/main/problem/accept/${problemId}`, {
+                        statusstate: statusstate 
                         
-                    })
                 })
-                .then(res => res.json())
-                .then(result => {
+                
+                .then(res => {
+                    const result = res.data; 
                     if (result.success) {
                         alert("รับงานเรียบร้อย");
-                        
-                    //location.reload(); // โหลดตารางใหม่
+                        location.reload(); // โหลดตารางใหม่
                     } 
-                    if(result.message){
-                        alert(result.message);
-                        
-                    }
+                    
                     
                 })
 
                 .catch(err => {
-                console.error("เกิดข้อผิดพลาด:", err);
-                alert("เกิดข้อผิดพลาด กรุณาลองใหม่");
-                
-                })
 
-                .finally(() => {
-                // เปิดปุ่มใหม่หลังเสร็จสิ้น (ถ้าไม่ reload)
-                isProcessing = false;
-                acceptBtn.disabled = false;
+                     if(err.message){
+                        alert(err.response.data.message);
+                        location.reload();
+                        console.log(err);
+                     }
+                     
+                console.error("เกิดข้อผิดพลาด:", err);
                 });
+
                 console.log("รับงานหมายเลข:", problemId);
             });
             
@@ -200,15 +191,14 @@ document.addEventListener('DOMContentLoaded', function() {
     if(workCancelbtn) {
         workCancelbtn.addEventListener("click", (e) => {
             
-        if(confirm("คุณต้องการยกเลิกงานนี้ใช่หรือไม่?")){
+            if(confirm("คุณต้องการยกเลิกงานนี้ใช่หรือไม่?")){
                 
-                const problemId = e.target.dataset.problemid;
+                const problemId = e.target.dataset.problemId;
                 console.log("ยกเลิกงานหมายเลข:", problemId);
-                fetch(`/main/problem/cancel/${problemId}`, {
-                    method: "POST",
-                })
-                .then(res => res.json())
-                .then(result => {
+                axios.post(`/main/problem/cancel/${problemId}`)
+            
+                .then(res => {
+                    result = res.data;
                     if (result.success) {
                         alert("ยกเลิกงานเรียบร้อย");
                         location.reload(); // โหลดตารางใหม่
@@ -256,6 +246,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         if (res.data.success == true) {
                         alert("อัพเดทสถานะเรียบร้อย");
                         location.reload(); // โหลดตารางใหม่
+                       
                         }
                     })
                     .catch(err => console.error(err));
@@ -270,9 +261,10 @@ document.addEventListener('DOMContentLoaded', function() {
         workFinishbtn.addEventListener("click", (e) => {
             if(confirm("คุณต้องการเสร็จสิ้นงานนี้ใช่หรือไม่?")){
                 const problemId = e.target.dataset.problemId;
-                
+                const datetime = new Date();
                 axios.post(`/main/problem/update/${problemId}`, {
-                    statusid: 4
+                    statusid: 4,
+                    finishat : datetime
                     })
                     .then(res => {
                         if (res.data.success == true) {
@@ -345,7 +337,40 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     
-    
+    const navbarNav = this.getElementById("navbarNav");
+    const btnWork = document.getElementById("btnWork");
+    if(navbarNav) {
+        axios.get("/main/users/data")
+        .then(res => {
+            user = res.data
+            const fullname = document.getElementById("firstname");
+            if (fullname) fullname.textContent = user.fullname || "ไม่ระบุชื่อ";
+
+            const menus = ["menu-home", "menu-totalproblem", "menu-mywork", "menu-myReportedHistory", "menu-myworkhistory"];
+            menus.forEach(id => {
+            const navbar = document.getElementById(id);
+
+            if (navbar) navbar.style.display = "none";
+        });
+
+        if (user.rolename === "User") {
+            ["menu-home", "menu-totalproblem", "menu-myReportedHistory"].forEach(id => {
+            const navbar = document.getElementById(id);
+            if (navbar) navbar.style.display = "flex";
+            if(btnWork) btnWork.style.display = "none";
+            console.log(id);
+            });
+        } else if (user.rolename === "Admin" || user.rolename === "Technician") {
+            ["menu-home", "menu-totalproblem", "menu-mywork", "menu-myworkhistory"].forEach(id => {
+            const navbar = document.getElementById(id);
+            if (navbar) navbar.style.display = "flex";
+            });
+        } else {
+            console.warn("ไม่พบ role ที่ตรงกับผู้ใช้:", user.roleid);
+        }
+        })
+        .catch(err => console.error("Error loading user info:", err));
+    }
 }); // ปิด DOMContentLoaded
 
 
@@ -368,12 +393,15 @@ window.openProblemDetail = function(problemData) {
     }
     if (acceptBtn) {
         acceptBtn.dataset.problemId = problemData.problemId;
+        acceptBtn.dataset.status = problemData.status;
         console.log("acceptBtn", acceptBtn.dataset.problemId);
+        console.log("acceptBtn", acceptBtn.dataset.status);
     }
     if(workUpdatebtn && workCancelbtn && workFinishbtn) {
         workCancelbtn.dataset.problemId = problemData.problemId;
         workUpdatebtn.dataset.problemId = problemData.problemId;
         workFinishbtn.dataset.problemId = problemData.problemId;
+        
         console.log("workUpdatebtn", workUpdatebtn.dataset.problemId);
         console.log("workCancelbtn", workCancelbtn.dataset.problemId);
         console.log("workFinishbtn", workFinishbtn.dataset.problemId);
