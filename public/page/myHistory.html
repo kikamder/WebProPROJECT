@@ -3,32 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>รายการปัญหา</title>
+    <title>ประวัติของฉัน</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link rel="stylesheet" href="../css/main.css">
+    <!-- ของicon -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- ใช้เรียก api  -->
+    
 </head>
 <body>
     <!-- Navbar -->
-    <div id="page-myWorkHistory-content"></div> 
+    <div id="page-history-content"></div> 
     <nav class="navbar navbar-expand-lg navbar-custom">
         <div class="container-fluid px-4">
             <!-- ==================== -->
-
             <!-- logo -->
-
             <a href="/main" class="newProblemhref">
-
                 <div class="logo-box">
-
                     <i class="bi bi-question-diamond-fill"></i>
-
                 </div>
-
             </a>
-
             <!-- ==================== -->
             
             <button class="navbar-toggler menu-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -37,10 +32,10 @@
                 <span></span>
             </button>
             
-           <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav nav-center" >
                     <li class="nav-item" id="menu-home">
-                        <a class="nav-link nav-btn " href="/main" >หน้า Home</a>
+                        <a class="nav-link nav-btn active" href="/main" >หน้า Home</a>
                     </li>
                     <li class="nav-item" id="menu-totalproblem">
                         <a class="nav-link nav-btn" href="/main/problemlist" >รวมปัญหาที่แจ้ง</a>
@@ -49,10 +44,10 @@
                         <a class="nav-link nav-btn" href="/main/myWorkAssignment" >งานของฉัน</a>
                     </li>
                     <li class="nav-item" id="menu-myReportedHistory">
-                        <a class="nav-link nav-btn" href="/main/myHistory">ประวัติการแจ้งของฉัน</a>
+                        <a class="nav-link nav-btn active" href="/main/myHistory">ประวัติการแจ้งของฉัน</a>
                     </li>
                     <li class="nav-item" id="menu-myworkhistory">
-                        <a class="nav-link nav-btn active" href="/main/myWorkHistory" >ประวัติการทำงานของฉัน</a>
+                        <a class="nav-link nav-btn" href="/main/myWorkHistory" >ประวัติการทำงานของฉัน</a>
                     </li>
                 </ul>
             </div>
@@ -66,7 +61,7 @@
             <div class="row align-items-center">
                 <div class="col-md-6">
                     <h1 class="page-title">
-                        <i class="fas fa-clipboard-list me-2"></i>รายการงานที่ฉันรับทั้งหมด (Work history)
+                        <i class="fas fa-clipboard-list me-2"></i>รายการปัญหา (Problems)
                     </h1>
                 </div>
                 <!-- <div class="col-md-6 text-end ">
@@ -94,23 +89,19 @@
                 <table class="table table-custom">
                     <thead class="table-header sticky-top">
                         <tr>
-                            
-                            <th style="min-width: 80px;" id="th_problemid">ID</th>
+                            <th style="min-width: 80px;" id="th_id">ID</th>
                             <th style="min-width: 130px;" id="th_createat">วันที่สร้าง</th>
                             <th style="min-width: 200px;" id="th_title">ชื่อปัญหา</th>
                             <th style="min-width: 130px;" id="th_category">หมวดหมู่</th>
-                            <th style="min-width: 250px;" id="th_description" >รายละเอียด</th>
+                            <th style="min-width: 250px;" id="th_description" class="col-description">รายละเอียด</th>
                             <th style="min-width: 120px;" id="th_department">แผนก</th>
                             <th style="min-width: 140px;" id="th_status">สถานะ</th>
                             <th style="min-width: 150px;" id="th_priority">ระดับความสำคัญ</th>
                             <th style="min-width: 150px;" id="th_location">สถานที่</th>
-                            <th style="min-width: 150px;" id="th_assignat">รับงานเมื่อ</th>
-                            <th style="min-width: 150px;" id="th_finishat">เสร็จงานเมื่อ</th>
-                            
-                            
+                            <th style="min-width: 100px;" id="th_comment">Comment</th>
                         </tr>
                     </thead>
-                    <tbody id="myWorkAssignmentHistoryTable" >
+                    <tbody id="problemTable">
                         <!-- Sample Data Row 1 -->
                        
                     </tbody>
@@ -169,7 +160,7 @@
                             <div class="col-md-6">
                                 <label class="status-label">สถานะงาน :</label>
                                 <div class="status-value">
-                                    <span class="badge status-badge-large status-pending" id="problemStatus"></span>
+                                    <span class="badge status-badge-large" id="problemStatus"></span>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -182,7 +173,40 @@
                     </div>
 
                     <!-- ปุ่มเลือกรับงาน -->
+                    <div class="action-section">
+                        
+                        <button type="button" class="btn btn-cancle-work" id="workCancelbtn">
+                            <i class="fas fa-hand-pointer me-2"></i>
+                            ยกเลิกงาน
+                        </button>
+                        <button type="button" class="btn btn-edit-work" id="workUpdatebtn">
+                            <i class="fas fa-hand-pointer me-2"></i>
+                            อัปเดตงาน
+                        </button>
+                        <button type="button" class="btn btn-finish-work" id="workFinishbtn">
+                            <i class="fas fa-hand-pointer me-2"></i>
+                            เสร็จสิ้นงาน
+                        </button>
+
+                        
+                        
+                    </div>
+                    <div class="editsection mb-3 mt-4"  id="editsectionshow" >
+                        
+                    <select id="optionsection" >
+                            <option value="">-- เลือกสถานะ --</option>
+                            <option value="2">กำลังดำเนินการ</option>
+                            <option value="3">รอดำเนินการ</option>
+                            
+                            
+                    </select>
+                        <button type="button" class="btn btn-editconfirm-work" id="editconfirmbtn">
+                            ยืนยัน
+                        </button>
+                        
+                    </div>
                     
+                    </div>
 
                     <!-- พื้นที่ Scrollable -->
                     <div class="scrollable-content mt-4">
@@ -213,11 +237,10 @@
 
 
 
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
     <script src="../js/fetch.js"></script>
     <script src="../js/main.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </body>
 </html>

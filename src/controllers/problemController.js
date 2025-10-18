@@ -24,7 +24,6 @@ export const getProblemlist = async (req, res) =>  {
         JOIN Status s ON p.statusid = s.statusid
         JOIN Department d ON p.departmentid = d.departmentid
         JOIN ServiceLevelAgreement sla ON p.priorityid = sla.priorityid
-        WHERE p.statusid != 4 AND p.statusid != 5 
         ORDER BY p.problemid DESC;
       `);
 
@@ -172,6 +171,38 @@ export const getMyWorkHistory = async (req, res) =>  {
       ORDER BY p.problemid DESC
       ;`, [req.session.user.usersid]);
       res.json(result.rows);
+  } catch (err) {
+    console.error("Database error:", err);
+    res.status(500).json({ error: "Database error" });
+  }
+};
+
+export const getMyHistory = async (req, res) =>  {
+  try {
+    const result = await pool.query(`
+      SELECT 
+        p.problemid,
+        p.title,
+        p.description,
+        p.description,
+        p.createat,
+        p.location,
+        CONCAT (u.firstname, ' ', u.lastname) AS createby,
+        c.categoryname,
+        s.statusstate,
+        d.departmentname,
+        sla.prioritylevel,
+        p.comment
+      FROM Problem p
+      JOIN Users u ON p.createby = u.usersid
+      JOIN Category c ON p.categoryid = c.categoryid
+      JOIN Status s ON p.statusid = s.statusid
+      JOIN Department d ON p.departmentid = d.departmentid
+      JOIN ServiceLevelAgreement sla ON p.priorityid = sla.priorityid
+      WHERE p.createby = $1
+      ORDER BY p.problemid DESC
+    ` , [req.session.user.usersid]);
+    res.json(result.rows);
   } catch (err) {
     console.error("Database error:", err);
     res.status(500).json({ error: "Database error" });

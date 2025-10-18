@@ -14,13 +14,14 @@ body {
 
 /* ===== Navbar Styles ===== */
 .navbar-custom {
-    background: white;
+    background-color: #E2B59A;
     padding: 15px 0;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 .newProblemhref {
     text-decoration: none;
-    color: #333;
+    width: 50px;
+    color: #f0f0f0;
 }
 .editsection {
     display: flex;
@@ -48,13 +49,13 @@ body {
 
 
 .user-info-box {
-    background-color: rgb(218, 131, 89);
+    background-color: rgb(235, 166, 131);
     border-radius: 10px;
     
 }
 
 .notification-card {
-    background-color: rgb(218, 131, 89);
+    background-color: rgb(233, 78, 78);
     border-radius: 10px;
 }
 
@@ -75,7 +76,7 @@ body {
 .logo-text {
     font-size: 18px;
     font-weight: bold;
-    color: #333;
+    color: #ffffff;
     text-align: center;
     padding: 0 10px;
 }
@@ -85,7 +86,7 @@ body {
 }
 
 .nav-btn {
-    background: linear-gradient(135deg, #FFD400 0%, #FFDD3C 100%) !important;
+    background: linear-gradient(135deg, #B77466 0%, #b8887f 100%) !important;
     color: rgb(0, 0, 0) !important;
     padding: 15px 30px !important;
     border-radius: 10px;
@@ -98,7 +99,7 @@ body {
 
 .nav-btn:hover,
 .nav-btn.active {
-    background: linear-gradient(135deg, #FFD400 0%, #FFDD3C 100%) !important;
+    background: linear-gradient(135deg, #f0813b 0%, #ce7e4d 100%) !important;
     transform: translateY(-2px);
     box-shadow: 0 6px 15px rgba(80, 77, 77, 0.4);
 }
@@ -320,14 +321,10 @@ body {
     font-weight: 600;
 }
 
-.status-pending {
-    background: #fff3cd;
-    color: #856404;
-}
 
-.status-completed {
-    background: #d4edda;
-    color: #155724;
+.status-pending {
+    color: #000000;
+    background: #ffdb38;
 }
 
 .btn-logout {
@@ -540,10 +537,7 @@ body {
     text-align: center;
 }
 
-.status-pending {
-    background: #fff3cd;
-    color: #856404;
-}
+
 
 .status-progress {
     background: #cfe2ff;
@@ -652,7 +646,7 @@ body {
 }
 
 .table-custom tbody td.col-description:hover {
-    background-color: #e3f2fd;
+    background-color: #ffc670;
 }
 
 .modal-body .action-section {

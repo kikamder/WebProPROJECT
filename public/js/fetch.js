@@ -1,7 +1,10 @@
 
 document.addEventListener('DOMContentLoaded',async () => {    
+  let allData = [];
+  
     const page_problem_Container = document.getElementById('page-problem-content');
     if(page_problem_Container) {
+      
     axios("/main/problemlist/data")
       .then(res => {
         data = res.data;
@@ -97,9 +100,6 @@ document.addEventListener('DOMContentLoaded',async () => {
       .then(res => {
         data = res.data;
         const table = document.getElementById("myWorkAssignmentHistoryTable");
-        
-        
-      
         
         table.innerHTML = "";
 
@@ -333,6 +333,45 @@ document.addEventListener('DOMContentLoaded',async () => {
 
   }
 
+  const page_history_Container = document.getElementById('page-history-content');
+  if (page_history_Container) {
+    axios.get("/main/myHistory/data")
+      .then(response => {
+        const data = response.data; // ✅ axios แปลง JSON ให้อัตโนมัติ
+        const table = document.getElementById("problemTable");
+        table.innerHTML = "";
+
+        if (data.length === 0) {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `<td colspan="11" class="text-center text-muted py-3">ไม่มีรายการปัญหา</td>`;
+          table.appendChild(tr);
+          return;
+        }
+
+        data.forEach(row => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${row.problemid}</td>
+            <td>${new Date(row.createat).toLocaleString("th-TH")}</td>
+            <td>${row.title || "-"}</td>
+            <td>${row.categoryname || "-"}</td>
+            <td class="col-description">${row.description || "-"}</td>
+            <td>${row.departmentname || "-"}</td>
+            <td>${row.statusstate || "-"}</td>
+            <td>${row.prioritylevel || "-"}</td>
+            <td>${row.location || "-"}</td>
+            <td>${row.comment || "-"}</td>
+          `;
+          table.appendChild(tr);
+        });
+      })
+      .catch(err => {
+        console.error("Error fetching myHistory data:", err);
+        // สามารถแจ้งผู้ใช้ได้ เช่น alert หรือแสดงในหน้า
+        // alert("เกิดข้อผิดพลาดในการดึงข้อมูลประวัติ");
+      });
+  }
+
 
   //ส่งฟอร์มไป server (มีเฉพาะหน้าที่มีฟอร์มแจ้งปัญหา)
   const form = document.getElementById("problemForm");
@@ -460,7 +499,143 @@ if (form) {
         .catch(err => console.error(err));
     });
   }
+
+    const navbarNav = document.getElementById("navbarNav");
+    const btnWork = document.getElementById("btnWork");
+    if(navbarNav) {
+        axios.get("/main/users/data")
+        .then(res => {
+            user = res.data
+            const fullname = document.getElementById("firstname");
+            if (fullname) fullname.textContent = user.fullname || "ไม่ระบุชื่อ";
+
+            const menus = ["menu-home", "menu-totalproblem", "menu-mywork", "menu-myReportedHistory", "menu-myworkhistory"];
+            menus.forEach(id => {
+            const navbar = document.getElementById(id);
+
+            if (navbar) navbar.style.display = "none";
+        });
+
+        if (user.rolename === "User") {
+            ["menu-home", "menu-totalproblem", "menu-myReportedHistory"].forEach(id => {
+            const navbar = document.getElementById(id);
+            if (navbar) navbar.style.display = "flex";
+            if(btnWork) btnWork.style.display = "none";
+            console.log(id);
+            });
+        } else if (user.rolename === "Admin" || user.rolename === "Technician") {
+            ["menu-home", "menu-totalproblem", "menu-mywork", "menu-myworkhistory"].forEach(id => {
+            const navbar = document.getElementById(id);
+            if (navbar) navbar.style.display = "flex";
+            });
+        } else {
+            console.warn("ไม่พบ role ที่ตรงกับผู้ใช้:", user.roleid);
+        }
+        })
+        .catch(err => console.error("Error loading user info:", err));
+    }
  
+
+
+
+    //ปุ่มเลือกสถานะ
+    // const tableBody = document.getElementById("problemTable");
+    // const statusMap = {
+    //   "all": "all",
+    //   "pending": "Pending/รอข้อมูล",
+    //   "in-progress": "Open/กำลังดำเนินการ",
+    //   "completed": "Closed/ปิดงานแล้ว"
+    // };
+
+    //จำไม่ได้ว่าอันนี้เพิ่มมาใหม่รึเปล่าเช็คเอานะคะ
+    // ฟังก์ชันดึงข้อมูลจาก API
+    // function loadData() {
+    //     axios.get("/main/problemlist/data") // เปลี่ยนเป็น endpoint จริงของคุณ
+    //         .then(res => {
+    //             allData = res.data; // เก็บข้อมูลทั้งหมด
+    //             renderTable(allData); // แสดงตารางทั้งหมดตอนแรก
+    //         })
+    //         .catch(err => {
+    //             console.error("Error fetching data:", err);
+    //         });
+    // }
+
+    // ฟังก์ชันสร้าง row ของ table
+    // function renderTable(data) {
+    //     tableBody.innerHTML = ""; // ล้างตารางก่อน
+    //     data.forEach(item => {
+    //         const row = document.createElement("tr");
+    //         row.innerHTML = `
+    //             <td>${item.problemid}</td>
+    //             <td>${item.createat}</td>
+    //             <td>${item.createby}</td>
+    //             <td>${item.title}</td>
+    //             <td>${item.categoryname}</td>
+    //             <td>${item.description}</td>
+    //             <td>${item.departmentname}</td>
+    //             <td>${item.statusstate}</td>
+    //             <td>${item.prioritylevel}</td>
+    //             <td>${item.location}</td>
+    //             <td>${item.comment || ''}</td>
+    //         `;
+    //         tableBody.appendChild(row);
+    //     });
+    // }
+
+    // ================== //
+    // ฟังก์ชันสร้าง row ของ table
+    
+  //   function renderTable(data) {
+  //   if (!tableBody) return; // ถ้าไม่มี tableBody ให้ return ทันที // ป้องกัน error ถ้า tableBody เป็น null
+  //   tableBody.innerHTML = "";
+  //   data.forEach(item => {
+  //     const tr = document.createElement("tr");
+  //     tr.innerHTML = `
+  //       <td>${item.problemid}</td>
+  //       <td>${new Date(item.createat).toLocaleString("th-TH")}</td>
+  //       <td>${item.createby || "-"}</td>
+  //       <td>${item.title || "-"}</td>
+  //       <td>${item.categoryname || "-"}</td>
+  //       <td>${item.description || "-"}</td>
+  //       <td>${item.departmentname || "-"}</td>
+  //       <td>${item.statusstate || "-"}</td>
+  //       <td>${item.prioritylevel || "-"}</td>
+  //       <td>${item.location || "-"}</td>
+  //       <td>${item.comment || "-"}</td>
+  //     `;
+  //     tableBody.appendChild(tr);
+  //   });
+  // }
+
+    // ================== //
+    // ฟังก์ชันกรองสถานะ อันนี้มีแก้ให้พอกดปุ่มแล้วเปลี่ยนสีข้างหลังปุ่มตามด้วย 
+    // function filterStatus(status) {
+    //       if(status === "all") {
+    //           // console.log(filtered);
+    //           renderTable(allData);
+    //           return;
+    //       } else {
+    //         const mappedStatus = statusMap[status].trim().toLowerCase();
+    //         const filtered = allData.filter(item => item.statusstate && item.statusstate.trim().toLowerCase() === mappedStatus);
+    //         console.log("Mapping status:", mappedStatus);
+    //         console.log("Filtered items:", filtered);
+    //           // const filtered = allData.filter(item => item.statusstate === status);
+    //           renderTable(filtered);
+    //       }
+    //   }
+    //   document.querySelectorAll('.btn-filter').forEach(button => {
+    //   button.addEventListener('click', () => {
+    //     //ลบคลาส active ออกจากปุ่มทั้งหมด
+    //     document.querySelectorAll('.btn-filter').forEach(btn => btn.classList.remove('active'));
+    //     //เพิ่มคลาส active ให้ปุ่มที่คลิก
+    //     button.classList.add('active');
+
+    //     //อ่านค่า data-filter ของปุ่ม
+    //     const status = button.dataset.filter;
+    //     filterStatus(status);
+    //   });
+    // });
+    // loadData(); // เริ่มโหลดข้อมูล อันนี้ต้องใส่ไม่งั้นจะไม่โหลดข้อมูลมาแสดง
 });
 
 

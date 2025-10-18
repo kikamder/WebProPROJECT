@@ -2,7 +2,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import { getUsers, getUser , getTechHome , getuserHome , getadminHome} from "../controllers/usersController.js";
-import {getLatestWorkAssignment,updateProblem ,cancelWorkAssignment,getProblemlist ,getProblemlastest, getMyWorkAssignment ,getMyWorkHistory, addProblem, checkSession, getCategory, getPriority, getDepartment,acceptWorkAssignment} from "../controllers/problemController.js";
+import {getMyHistory,getLatestWorkAssignment,updateProblem ,cancelWorkAssignment,getProblemlist ,getProblemlastest, getMyWorkAssignment ,getMyWorkHistory, addProblem, checkSession, getCategory, getPriority, getDepartment,acceptWorkAssignment} from "../controllers/problemController.js";
 import { changePassword, login , logout } from "../controllers/authController.js";
 import { dirname } from "path";
 import path from "path";
@@ -51,18 +51,24 @@ router.get("/main/myWorkAssignment",requireRole('Technician'), requireAuth , (re
   return res.sendFile(filePath);
 });
 
-router.get("/main/myWorkHistory", requireAuth ,requireRole('Technician'), (req, res) => {
+router.get("/main/myWorkHistory", requireAuth , (req, res) => {
   const filePath = path.join(__dirname, "../../public/page/myWorkHistory.html");
+  return res.sendFile(filePath);
+});
+
+router.get("/main/myHistory", requireAuth , (req, res) => {
+  const filePath = path.join(__dirname, "../../public/page/myHistory.html");
   return res.sendFile(filePath);
 });
 
 
 router.get("/main/users/data",requireAuth, getUser);
+
 router.get("/main/problemlist/data", requireAuth, getProblemlist);
-
-
+router.get("/main/myHistory/data",requireAuth,requireRole('User'), getMyHistory);
 router.get("/main/myWorkHistory/data",requireAuth,requireRole('Technician'), getMyWorkHistory);
 router.get("/main/myWorkAssignment/data",requireAuth,requireRole('Technician'), getMyWorkAssignment);
+
 router.get("/main/problemlastest/data",requireAuth, getProblemlastest);
 
 

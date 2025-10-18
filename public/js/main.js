@@ -337,40 +337,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     
-    const navbarNav = this.getElementById("navbarNav");
-    const btnWork = document.getElementById("btnWork");
-    if(navbarNav) {
-        axios.get("/main/users/data")
-        .then(res => {
-            user = res.data
-            const fullname = document.getElementById("firstname");
-            if (fullname) fullname.textContent = user.fullname || "ไม่ระบุชื่อ";
-
-            const menus = ["menu-home", "menu-totalproblem", "menu-mywork", "menu-myReportedHistory", "menu-myworkhistory"];
-            menus.forEach(id => {
-            const navbar = document.getElementById(id);
-
-            if (navbar) navbar.style.display = "none";
-        });
-
-        if (user.rolename === "User") {
-            ["menu-home", "menu-totalproblem", "menu-myReportedHistory"].forEach(id => {
-            const navbar = document.getElementById(id);
-            if (navbar) navbar.style.display = "flex";
-            if(btnWork) btnWork.style.display = "none";
-            console.log(id);
-            });
-        } else if (user.rolename === "Admin" || user.rolename === "Technician") {
-            ["menu-home", "menu-totalproblem", "menu-mywork", "menu-myworkhistory"].forEach(id => {
-            const navbar = document.getElementById(id);
-            if (navbar) navbar.style.display = "flex";
-            });
-        } else {
-            console.warn("ไม่พบ role ที่ตรงกับผู้ใช้:", user.roleid);
-        }
-        })
-        .catch(err => console.error("Error loading user info:", err));
-    }
+    
 }); // ปิด DOMContentLoaded
 
 
@@ -437,6 +404,7 @@ window.openProblemDetail = function(problemData) {
         detailElement.textContent = problemData.description || '-';
     if (statusElement) 
         statusElement.textContent = problemData.status || '-';
+        
     if (priorityElement) 
         priorityElement.textContent = problemData.priority || '-';
     if (createDateElement)
