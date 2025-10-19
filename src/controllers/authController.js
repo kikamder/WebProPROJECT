@@ -57,6 +57,8 @@ export const login = async (req, res) => {
     const filePath = path.join(__dirname, "../../public/page/newPassword.html");
     return res.sendFile(filePath);
   }
+  if(u.rolename == "Admin") return res.redirect("/AdMain");
+
   return res.redirect("/main");
   } catch (e) {
     console.error(e);
@@ -77,3 +79,4 @@ export const changePassword = async (req, res) => {
   console.log('ข้อมูล Session User:', req.user);
   return res.redirect("/main");
 };
+

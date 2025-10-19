@@ -95,7 +95,7 @@
                     <thead class="table-header sticky-top">
                         <tr>
                             
-                            <th style="min-width: 80px;" id="th_problemid">ID</th>
+                            <th style="min-width: 80px;" id="th_problemId">ID</th>
                             <th style="min-width: 130px;" id="th_createat">วันที่สร้าง</th>
                             <th style="min-width: 200px;" id="th_title">ชื่อปัญหา</th>
                             <th style="min-width: 130px;" id="th_category">หมวดหมู่</th>
@@ -182,7 +182,38 @@
                     </div>
 
                     <!-- ปุ่มเลือกรับงาน -->
-                    
+                    <div class="action-section">
+                        
+                        <button type="button" class="btn btn-cancle-work" id="workCancelbtn">
+                            <i class="fas fa-hand-pointer me-2"></i>
+                            ยกเลิกงาน
+                        </button>
+                        <button type="button" class="btn btn-edit-work" id="workUpdatebtn">
+                            <i class="fas fa-hand-pointer me-2"></i>
+                            อัปเดตงาน
+                        </button>
+                        <button type="button" class="btn btn-finish-work" id="workFinishbtn">
+                            <i class="fas fa-hand-pointer me-2"></i>
+                            เสร็จสิ้นงาน
+                        </button>
+
+                        
+                        
+                    </div>
+                    <div class="editsection mb-3 mt-4"  id="editsectionshow" >
+                        
+                        <select id="optionsection" >
+                            <option value="">-- เลือกสถานะ --</option>
+                            <option value="2">กำลังดำเนินการ</option>
+                            <option value="3">รอดำเนินการ</option>
+                            
+                            
+                        </select>
+                        <button type="button" class="btn btn-editconfirm-work" id="editconfirmbtn">
+                            ยืนยัน
+                        </button>
+                        
+                    </div>
 
                     <!-- พื้นที่ Scrollable -->
                     <div class="scrollable-content mt-4">

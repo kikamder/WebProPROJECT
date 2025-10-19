@@ -12,6 +12,42 @@ body {
     color: #333;
 }
 
+ .dashboard-card {
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .card-yellow {
+            background-color: #FFD93D;
+        }
+        .card-green {
+            background-color: #C1F366;
+        }
+        .card-pink {
+            background-color: #FF8DC7;
+        }
+        .card-title {
+            font-size: 14px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        .card-number {
+            font-size: 48px;
+            font-weight: bold;
+            margin: 0;
+        }
+        .split-card {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        .split-section {
+            flex: 1;
+        }
+        .split-section:first-child {
+            border-right: 2px solid rgba(0,0,0,0.1);
+        }
 /* ===== Navbar Styles ===== */
 .navbar-custom {
     background-color: #E2B59A;
@@ -86,6 +122,7 @@ body {
 }
 
 .nav-btn {
+    
     background: linear-gradient(135deg, #B77466 0%, #b8887f 100%) !important;
     color: rgb(0, 0, 0) !important;
     padding: 15px 30px !important;
@@ -102,6 +139,15 @@ body {
     background: linear-gradient(135deg, #f0813b 0%, #ce7e4d 100%) !important;
     transform: translateY(-2px);
     box-shadow: 0 6px 15px rgba(80, 77, 77, 0.4);
+}
+
+#menu-home,
+#menu-totalproblem,
+#menu-mywork,
+#menu-myReportedHistory,
+#menu-myworkhistory,
+#btnWork,#menu-alluser {
+  display: none;
 }
 
 .menu-toggle {
@@ -484,6 +530,7 @@ body {
     border-radius: 15px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.08);
     overflow: hidden;
+    
 }
 
 .table-responsive {
@@ -508,6 +555,7 @@ body {
     font-size: 14px;
     border: none;
     white-space: nowrap;
+    text-align: center;
 }
 
 .table-custom tbody tr {
@@ -524,6 +572,7 @@ body {
     vertical-align: middle;
     border-bottom: 1px solid #ecf0f1;
     font-size: 14px;
+    text-align: center;
 }
 
 /* Status Badges */
@@ -592,7 +641,83 @@ body {
     transform: scale(1.1);
 }
 
+.form-container-emp123 {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            max-width: 900px;
+            width: 100%;
+        }
 
+        .form-title-emp123 {
+            text-align: center;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+            padding: 12px 15px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+
+        .btn-submit-emp123 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 40px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: transform 0.2s ease;
+        }
+
+        .btn-submit-emp123:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-cancel-emp123 {
+            background: #6c757d;
+            color: white;
+            padding: 12px 40px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: transform 0.2s ease;
+        }
+
+        .btn-cancel-emp123:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .button-group-emp123 {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .row {
+            margin-bottom: 20px;
+        }
 
 /* Pagination */
 .pagination .page-link {

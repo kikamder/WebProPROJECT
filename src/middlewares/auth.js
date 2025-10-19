@@ -62,12 +62,21 @@ export const attachUser = (req, res, next) => {
 
 export const requireRole = (...allowedRoles) => {
   return (req, res, next) => {
-    if (!req.session || !req.session.user) {
+    const user = req.session.user;
+
+    // 1. ถ้ายังไม่ล็อกอิน → กลับไป login
+    if (!user) {
       return res.redirect('/login');
     }
 
-    if (allowedRoles.includes(req.user.rolename)) {
-      next();
+    // 2. ถ้ามี role ตรงกับที่อนุญาต → ผ่าน
+    if (allowedRoles.includes(user.rolename)) {
+      return next();
+    }
+
+    // 3. ถ้า role ไม่ตรง → redirect ตามสิทธิ์
+    if (user.rolename === "Admin") {
+      return res.redirect('/Admain'); // สะกดให้ถูกนะครับ ไม่ใช่ /Admain 😆
     } else {
       return res.redirect('/main');
     }

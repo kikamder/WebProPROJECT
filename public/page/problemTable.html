@@ -43,6 +43,9 @@
                     <li class="nav-item" id="menu-home">
                         <a class="nav-link nav-btn " href="/main" >หน้า Home</a>
                     </li>
+                    <li class="nav-item" id="menu-adminHome">
+                        <a class="nav-link nav-btn active" href="/AdMain" >หน้า Home</a>
+                    </li>
                     <li class="nav-item" id="menu-totalproblem">
                         <a class="nav-link nav-btn active" href="/main/problemlist" >รวมปัญหาที่แจ้ง</a>
                     </li>
@@ -54,6 +57,12 @@
                     </li>
                     <li class="nav-item" id="menu-myworkhistory">
                         <a class="nav-link nav-btn" href="/main/myWorkHistory" >ประวัติการทำงานของฉัน</a>
+                    </li>
+                    <li class="nav-item" id="menu-alluser">
+                        <a class="nav-link nav-btn" href="/main/allUser" >ดูข้อมูลพนักงานทั้งหมด</a>
+                    </li>
+                    <li class="nav-item" id="menu-Admin-add">
+                        <a class="nav-link nav-btn" href="/main/adminadd">เพิ่มพนักงาน</a>
                     </li>
                 </ul>
             </div>
@@ -170,6 +179,25 @@
                             รับงาน
                         </button>
                     </div>
+
+                    <!-- สำหรับ Admin -->
+                     <div class="action-section px-3" id="adminEditSection">
+                        <div class="mb-3">
+                            <label for="assignDropdown" class="form-label">ผู้รับผิดชอบ</label>
+                            <select id="assignDropdown" class="form-select" readonly=""></select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="statusDropdown" class="form-label">สถานะ</label>
+                            <select id="statusDropdown" class="form-select"></select>
+                            <option value=""></option>
+                        </div>
+                        <div class="mb-3">
+                            <label for="priorityDropdown" class="form-label">ระดับความสำคัญ</label>
+                            <select id="priorityDropdown" class="form-select"></select>
+                        </div>
+                        <button type="button" class="btn btn-primary" id="saveAdminEdit">บันทึก</button>
+                    </div>
+
 
                     <!-- พื้นที่ Scrollable -->
                     <div class="scrollable-content mt-4">

@@ -1,7 +1,86 @@
-
 document.addEventListener('DOMContentLoaded',async () => {    
   let allData = [];
   
+
+  const page_AdminDB_content = document.getElementById('page-AdminDB-content');
+    if(page_AdminDB_content){
+    axios.get("/main/adminaction/data")
+      .then(res => {
+
+        const data = res.data;
+
+        // console.log(data);
+        const table = document.getElementById("Actiontable");
+        table.innerHTML = "";
+
+        data.forEach(row => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${row.usersid}</td>
+            <td>${row.usersemail}</td>
+            <td>${row.fullname}</td>
+            <td>${row.teamname}</td>
+            <td>${row.departmentname || "-"}</td>
+            <td>${row.phonenumber || "-"}</td>
+            <td>
+               <a href=/editUser/${row.usersid}>แก้ไขข้อมูล</a>
+            </td>
+            `;
+          table.appendChild(tr);
+        });
+      })
+      .catch(err => {
+        if (err.response?.status === 401) {
+          console.error("Unauthorized! Please login first.");
+        } else {
+          console.error("Error fetching Actions:", err);
+        }
+      });
+  }
+
+
+   const navbarNav = document.getElementById("navbarNav");
+    const btnWork = document.getElementById("btnWork");
+    if(navbarNav) {
+        axios.get("/main/users/data")
+        .then(res => {
+            user = res.data
+            const fullname = document.getElementById("firstname");
+            if (fullname) fullname.textContent = user.fullname || "ไม่ระบุชื่อ";
+
+            const menus = ["menu-Admin-add,menu-alluser","menu-adminHome","menu-home", "menu-totalproblem", "menu-mywork", "menu-myReportedHistory", "menu-myworkhistory"];
+            menus.forEach(id => {
+            const navbar = document.getElementById(id);
+
+            if (navbar) navbar.style.display = "none";
+        });
+
+        if (user.rolename === "User") {
+            ["menu-home", "menu-totalproblem", "menu-myReportedHistory"].forEach(id => {
+            const navbar = document.getElementById(id);
+            if (navbar) navbar.style.display = "flex";
+            
+            console.log(id);
+            });
+        } else if (user.rolename === "Technician") {
+            ["menu-home", "menu-totalproblem", "menu-mywork", "menu-myworkhistory"].forEach(id => {
+            const navbar = document.getElementById(id);
+            if (navbar) navbar.style.display = "flex";
+            if(btnWork) btnWork.style.display = "flex";
+            });
+          }else if (user.rolename === "Admin") {
+            ["menu-home","menu-totalproblem","menu-alluser","menu-Admin-add"].forEach(id => {
+            const navbar = document.getElementById(id);
+            if (navbar) navbar.style.display = "flex";
+            
+            });
+        } else {
+            console.warn("ไม่พบ role ที่ตรงกับผู้ใช้:", user.roleid);
+        }
+        })
+        .catch(err => console.error("Error loading user info:", err));
+    }
+ 
     const page_problem_Container = document.getElementById('page-problem-content');
     if(page_problem_Container) {
       
@@ -169,11 +248,36 @@ document.addEventListener('DOMContentLoaded',async () => {
                 แก้ไขแล้ว ${count.resolved} ปัญหา`;
             })
             .catch(err => {
-              console.error("Error fetching TechCount:", err);
+              console.error("Error fetching userCount:", err);
             });
         } 
         else if (data.rolename == 'Admin') {
           lastestproblem.textContent = "รายการปัญหาที่เข้ามาล่าสุด";
+          const total_problem = document.getElementById('totalproblem');
+          const total_newProblem = document.getElementById('newproblem');
+          const total_in_progress = document.getElementById('resolvingProblem');
+          const total_resolved = document.getElementById('resolvedProblem');
+          const lateProblem = document.getElementById('lateProblem');
+          const total_Employee = document.getElementById('totalEmply');
+          const total_technicianHaswork = document.getElementById('totalActiveTechnician');
+          const total_normalEmployee = document.getElementById('totalNormalUser');
+          const total_technician = document.getElementById('totalTechnician');
+          axios.get("/main/users/dashboard/data")
+          .then(res => {
+            const data = res.data
+            console.log(data);
+            total_problem.textContent = data.total_problem;
+            total_newProblem.textContent = data.total_newproblem;
+            total_in_progress.textContent = data.total_in_progress;
+            total_resolved.textContent = data.total_resolved;
+            total_Employee.textContent = data.total_employee;
+            lateProblem.textContent = data.total_overdueproblem;
+            total_technicianHaswork.textContent = data.total_technicianhaswork;
+            total_normalEmployee.textContent = data.total_normalemployee;
+            total_technician.textContent = data.total_technician;
+          }).catch(err => {
+            console.error("Error fetching dashboard:", err);
+          })
         } 
         else if (data.rolename == 'Technician') {
           lastestproblem.textContent = "รายการปัญหาที่รับงานล่าสุด";
@@ -287,7 +391,7 @@ document.addEventListener('DOMContentLoaded',async () => {
       });
     }
     if(data.rolename == "Admin") {
-        axios.get("/main/problemlastest/data")
+        axios.get("/main/allProblemLastest/data")
         .then(res => {
           data = res.data;
       
@@ -479,62 +583,65 @@ if (form) {
     });
   }
 
+  const teamDropdown = document.getElementById("teamDropdown");
+  if(teamDropdown) {
+     axios.get("/getTeam/data")
+            .then(res => {
+                const teams = res.data
+                console.log("Team" , teams)
+                teams.forEach(team => {
+                    const option = document.createElement("option");
+                    option.value = team.teamid;
+                    option.textContent = team.teamname;
+                    teamDropdown.appendChild(option);
+                });
+            }).catch(error =>{
+                console.log("ERROR" , error);
+            });
+  }
+
+  const roleDropdown = document.getElementById("roleDropdown");
+  if(roleDropdown) {
+     axios.get("/getRole/data")
+      .then(res => {
+        const role = res.data
+        console.log("Team" , role)
+                role.forEach(roles => {
+                    const option = document.createElement("option");
+                    option.value = roles.roleid;
+                    option.textContent = roles.rolename;
+
+                    roleDropdown.appendChild(option);
+                });
+            }).catch(error =>{
+                console.log("ERROR" , error);
+            });
+  }
+
+  let loadedpri = false;
   const dropdownpri = document.getElementById("priorityDropdown");
   if(dropdownpri){ 
-    let loadedpri = false;
-    dropdownpri.addEventListener("click", () => {
       if (loadedpri) return;
 
       axios.get("/main/priority")
         .then(res => {
           data = res.data;
+
           data.forEach(servicelevelagreement => {
+
             const option = document.createElement("option");
             option.value = servicelevelagreement.priorityid;
             option.textContent = servicelevelagreement.prioritylevel;
             dropdownpri.appendChild(option);
           });
+          
           loadedpri = true;
         })
         .catch(err => console.error(err));
-    });
+    
   }
 
-    const navbarNav = document.getElementById("navbarNav");
-    const btnWork = document.getElementById("btnWork");
-    if(navbarNav) {
-        axios.get("/main/users/data")
-        .then(res => {
-            user = res.data
-            const fullname = document.getElementById("firstname");
-            if (fullname) fullname.textContent = user.fullname || "ไม่ระบุชื่อ";
-
-            const menus = ["menu-home", "menu-totalproblem", "menu-mywork", "menu-myReportedHistory", "menu-myworkhistory"];
-            menus.forEach(id => {
-            const navbar = document.getElementById(id);
-
-            if (navbar) navbar.style.display = "none";
-        });
-
-        if (user.rolename === "User") {
-            ["menu-home", "menu-totalproblem", "menu-myReportedHistory"].forEach(id => {
-            const navbar = document.getElementById(id);
-            if (navbar) navbar.style.display = "flex";
-            if(btnWork) btnWork.style.display = "none";
-            console.log(id);
-            });
-        } else if (user.rolename === "Admin" || user.rolename === "Technician") {
-            ["menu-home", "menu-totalproblem", "menu-mywork", "menu-myworkhistory"].forEach(id => {
-            const navbar = document.getElementById(id);
-            if (navbar) navbar.style.display = "flex";
-            });
-        } else {
-            console.warn("ไม่พบ role ที่ตรงกับผู้ใช้:", user.roleid);
-        }
-        })
-        .catch(err => console.error("Error loading user info:", err));
-    }
- 
+   
 
 
 

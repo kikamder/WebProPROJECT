@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
             };
             
             if (problemLastestData.title && problemLastestData.title !== '-') {
-
+                    
                 openProblemDetail(problemLastestData);
             } else {
                 console.warn('ไม่มีข้อมูลใน dataset');
@@ -119,9 +119,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 
             });
-
-            
-            
             
             
             const createbyHeader = table.querySelector('th#th_createby');
@@ -131,12 +128,31 @@ document.addEventListener('DOMContentLoaded', function() {
                 data.createby = row.dataset.createby || '-';
              }           
              
-            
           //  data.createby = td.closest("tr")?.dataset.createby || '-';
-             
-            console.log('ข้อมูลจากตาราง:', data);
+            if(user.rolename == "Admin"){
+             axios.get(`/main/assigned/${data.problemId}`)
+            .then(res => {
+                const result = res.data;
+
+                data.rolename = user.rolename;
+                data.assignby = result.map(item => item.assignby);
+                data.usersid = result.map(item => item.usersid);
+
+                console.log('ข้อมูลจากตาราง:', data);
+
+                openProblemDetail(data);
+            }).catch(error => {
+                console.log("Getting worker Error" , error);
+            });
+
+            }else {
+                openProblemDetail(data);
+            }
             
-            openProblemDetail(data);
+            
+            
+            
+            
         }
 
 
@@ -147,8 +163,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const acceptBtn = document.getElementById("acceptButton");
         if (acceptBtn) {
-            
-    
             acceptBtn.addEventListener("click", (e) => {
                 
                 const problemId = e.target.dataset.problemId;
@@ -331,14 +345,260 @@ document.addEventListener('DOMContentLoaded', function() {
         fileBox.appendChild(name);
         previewArea.appendChild(fileBox);
       }
+        });
     });
-  });
 
     }
 
+    const employeeForm123 = document.getElementById("employeeForm123");
     
+    if(employeeForm123) {
+        const submitUserData = document.getElementById("submitUserData");
+        const employeeId123 = document.getElementById("employeeId123");
+        const firstName123 = document.getElementById("firstName123");
+        const lastName123 = document.getElementById("lastName123");
+        const email123 = document.getElementById("email123");
+        const team123 = document.getElementById("team123");
+        const permission123 = document.getElementById("permission123");
+        const teamFirst = document.getElementById("teamFirst");
+        const roleFirst = document.getElementById("roleFirst");
+
+
+
+        const path = window.location.pathname;  
+        const userId = path.split("/")[2]; 
+        
+        employeeId123.value = userId;
+        axios.get(`/userform/edit/${userId}`)
+        .then(res => {
+            data = res.data;
+            console.log(data);
+            
+            email123.value = data.usersemail;
+            firstName123.value = data.firstname;
+            lastName123.value = data.lastname;
+            
+            ``
+           teamFirst.value = data.teamname;
+           roleFirst.value = data.rolename;
+
+            axios.get("/getTeam/data")
+            .then(res => {
+                const teams = res.data
+                console.log("Team" , teams)
+                teams.forEach(team => {
+                    const option = document.createElement("option");
+                    option.value = team.teamid;
+                    option.textContent = team.teamname;
+                    team123.appendChild(option);
+                });
+            }).catch(error =>{
+                console.log("ERROR" , error);
+            });
+
+
+            
+            axios.get("/getRole/data")
+            .then(res => {
+                const role = res.data
+                console.log("Team" , role)
+
+                permission123.innerHTML = "";
+
+                role.forEach(roles => {
+                    const option = document.createElement("option");
+                    option.value = roles.roleid;
+                    option.textContent = roles.rolename;
+
+                    permission123.appendChild(option);
+                });
+
+                
+            }).catch(error =>{
+                console.log("ERROR" , error);
+            });
+            
+            
+            
+        }).catch(error => {
+            console.log("ERROR" , error);
+        });
+        
+
+        
+
+        submitUserData.addEventListener("click", () => {
+            const selectedTeamId = team123.value;
+            const selectedTeamName = team123.options[team123.selectedIndex].text;
+
+            const selectedRoleId = permission123.value;
+            const selectedRoleName = permission123.options[permission123.selectedIndex].text;
+
+            axios.post("/submitEditUser", {
+                userid: employeeId123.value,
+                email: email123.value,
+                firstName123: firstName123.value,
+                lastName123: lastName123.value,
+                teamid: selectedTeamId,
+                teamname: selectedTeamName,
+                roleid: selectedRoleId,
+                rolename: selectedRoleName
+                })
+                .then(res => {
+                    const data = res.data;
+                    if(data.success) {
+                        alert("อัพเดตข้อมูลสำเร็จ");
+                        location.reload;
+                    }
+                
+                })
+                .catch(error => {
+                    console.error("ERROR:", error);
+                });
+
+                console.log({
+                    userid: employeeId123.value,
+                    email: email123.value,
+                    firstName123: firstName123.value,
+                    lastName123: lastName123.value,
+                    teamid: selectedTeamId,
+                    teamname: selectedTeamName,
+                    roleid: selectedRoleId,
+                    rolename: selectedRoleName
+                });
+        });
+        
+    }
+
+
+
+    const addBtn = document.getElementById("addUserBtn");
+    const formadd = document.getElementById("Addform");
+
+    if (!addBtn || !formadd) return;
+
+    addBtn.addEventListener("click", async (e) => {
+        e.preventDefault();
+
+        const firstname = document.getElementById("firstname").value.trim();
+        const lastname = document.getElementById("lastname").value.trim();
+        const department = document.getElementById("departmentDropdown").value;
+        const teamId = document.getElementById("teamDropdown").value;
+        const roleId = document.getElementById("roleDropdown").value;
+        const password = document.getElementById("password").value.trim();
+        const email = document.getElementById("email").value.trim();
+
+        if (!firstname || !lastname || !department || !teamId || !roleId || !password || !email) {
+        alert("กรุณากรอกข้อมูลให้ครบทุกช่อง");
+        return;
+        }
+
+        try {
+        const res = await axios.post("/add-user", {
+            firstname,
+            lastname,
+            teamId,
+            roleId,
+            password,
+            email,
+        });
+
+        if (res.data.success) {
+            alert("เพิ่มข้อมูลสำเร็จ!");
+            formadd.reset();
+            window.location.href = "/main";
+        } else {
+            alert("เพิ่มข้อมูลไม่สำเร็จ: " + res.data.message);
+        }
+        } catch (err) {
+        console.error("Error adding user:", err);
+        alert("เกิดข้อผิดพลาดในการเพิ่มข้อมูล");
+        }
+    });
+
+
+
+
     
 }); // ปิด DOMContentLoaded
+
+
+    
+
+// ฟังก์ชันโหลด dropdown ของ admin
+ function loadAdminDropdowns(problemData) {
+    console.log("กำลังโหลด dropdowns...");
+
+    // 🔹 โหลดผู้รับผิดชอบ
+    const assignDropdown = document.getElementById("assignDropdown");
+    if (assignDropdown) {
+        assignDropdown.innerHTML = ""; // เคลียร์ของเดิม
+
+        const assignby = problemData.assignby; // ["Rapeephat Boontool"]
+        const usersid = problemData.usersid;   // [2]
+
+        // วนลูปสร้าง <option>
+        assignby.forEach((name, index) => {
+            const option = document.createElement("option");
+            option.value = usersid[index]; // ดึงค่า id ตามลำดับเดียวกัน
+            option.textContent = name;     // แสดงชื่อผู้รับผิดชอบ
+            assignDropdown.appendChild(option);
+        });
+    }
+
+       const statusDropdown = document.getElementById("statusDropdown");
+       if(statusDropdown){
+            axios.get("/main/status")
+            .then(res => {
+                const status = res.data;
+                
+                console.log(status)
+
+                
+
+                status.forEach(status => {
+                const option = document.createElement("option");
+                option.textContent = status.statusstate;
+                statusDropdown.appendChild(option);
+                })
+            }).catch( error => {
+                console.log("Error getting data " , error);
+            });
+            loadedstatus = true;
+        }
+    // ปุ่มบันทึก admin
+    const saveAdminEdit = document.getElementById("saveAdminEdit");
+        if(saveAdminEdit){
+            saveAdminEdit.addEventListener("click", () => {
+                
+                const problemId = problemData.problemId;
+        if (!problemId) return alert("ไม่พบ Problem ID");
+
+             const data = {
+                problemId: problemId,
+                statusid: document.getElementById("statusDropdown").value,
+                priorityid: document.getElementById("priorityDropdown").value
+            };
+            if(data.priorityid == "" && data.statusid == "") return;
+
+            axios.post(`/main/problemList/update/${problemId}`,{
+                statusid : data.statusid,
+                priorityid : data.priorityid
+            }).then(res => {
+                const data = res.data
+                if(data.success)
+                    alert("บันทึกเรียบร้อย")
+                location.reload();
+
+            }).catch(error => {
+                alert("ERROR " , error);
+            });
+
+        console.log(problemId);
+    });
+}
+}
+
 
 
 // ===================================
@@ -346,44 +606,21 @@ document.addEventListener('DOMContentLoaded', function() {
 // ===================================
 window.openProblemDetail = function(problemData) {
     const modalElement = document.getElementById('problemDetailModal');
-    const acceptBtn = document.getElementById("acceptButton");
-    const workUpdatebtn = document.getElementById("workUpdatebtn");
-    const workCancelbtn = document.getElementById("workCancelbtn");
-    const workFinishbtn = document.getElementById("workFinishbtn"); 
-
-    
-    
     // เช็คว่า Modal มีอยู่จริง
     if (!modalElement) {
         console.error('ไม่พบ Modal element');
         return;
     }
-    if (acceptBtn) {
-        acceptBtn.dataset.problemId = problemData.problemId;
-        acceptBtn.dataset.status = problemData.status;
-        console.log("acceptBtn", acceptBtn.dataset.problemId);
-        console.log("acceptBtn", acceptBtn.dataset.status);
-    }
-    if(workUpdatebtn && workCancelbtn && workFinishbtn) {
-        workCancelbtn.dataset.problemId = problemData.problemId;
-        workUpdatebtn.dataset.problemId = problemData.problemId;
-        workFinishbtn.dataset.problemId = problemData.problemId;
-        
-        console.log("workUpdatebtn", workUpdatebtn.dataset.problemId);
-        console.log("workCancelbtn", workCancelbtn.dataset.problemId);
-        console.log("workFinishbtn", workFinishbtn.dataset.problemId);
-    }
-    
-   
-    
-    
-    
     
     const modal = new bootstrap.Modal(modalElement);
 
     
-    
     // อัพเดทข้อมูลใน Modal
+    
+    const acceptBtn = document.getElementById("acceptButton");
+    const workUpdatebtn = document.getElementById("workUpdatebtn");
+    const workCancelbtn = document.getElementById("workCancelbtn");
+    const workFinishbtn = document.getElementById("workFinishbtn");
     const titleElement = document.getElementById('problemDetailModalLabel');
     const detailElement = document.getElementById('problemDetail');
     const statusElement = document.getElementById('problemStatus');
@@ -392,7 +629,7 @@ window.openProblemDetail = function(problemData) {
     const createrElement = document.getElementById('creater');
     const creadtedByDepartmentElement = document.getElementById('creadtedByDepartment');
     const createdLocationElement = document.getElementById('createdLocation');
-
+    const action_section = document.getElementsByClassName("action-section")[0];
 
     if (titleElement) {
         titleElement.innerHTML = '<i class="fas fa-info-circle me-2"></i>' + 
@@ -416,6 +653,44 @@ window.openProblemDetail = function(problemData) {
         creadtedByDepartmentElement.textContent = problemData.department || '-';
     if (createdLocationElement)
         createdLocationElement.textContent = problemData.location || '-';
+
+    if (acceptBtn) {
+        if(problemData.status == "Resolved / แก้ไขแล้ว") {
+            acceptBtn.style.display = "none"
+        }else {
+            acceptBtn.style.display = "inline"
+            acceptBtn.dataset.problemId = problemData.problemId;
+            acceptBtn.dataset.status = problemData.status;
+        }
+        
+        
+    }
+    if(user.rolename == 'Technician'){
+        if(workUpdatebtn && workCancelbtn && workFinishbtn) {
+            if(problemData.status != "Resolved / แก้ไขแล้ว") {
+                action_section.style.display = "flex";   
+                workCancelbtn.dataset.problemId = problemData.problemId;
+                workUpdatebtn.dataset.problemId = problemData.problemId;
+                workFinishbtn.dataset.problemId = problemData.problemId;
+            
+            }else{
+                action_section.style.display = "none";}
+        }
+    }
+
+    if (problemData.rolename === "Admin") {
+        document.getElementById("adminEditSection").style.display = "flex";
+        loadAdminDropdowns(problemData);
+
+    } else {
+        const adminEditSection = document.getElementById("adminEditSection")
+        
+        if(adminEditSection)
+            adminEditSection.style.display = "none";
+    }
+        
+        
+    
 
     // เปิด Modal
     

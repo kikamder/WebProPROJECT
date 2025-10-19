@@ -69,6 +69,40 @@ export const getProblemlastest = async (req, res) =>  {
   }
 };
 
+
+export const getAllProblemLastest = async (req, res) =>  {
+  
+  try {
+    const result = await pool.query(`
+      SELECT 
+        p.problemid,
+        p.title,
+        p.description,
+        p.description,
+        p.createat,
+        p.location,
+        CONCAT (u.firstname, ' ', u.lastname) AS createby,
+        c.categoryname,
+        s.statusstate,
+        d.departmentname,
+        sla.prioritylevel,
+        p.comment
+      FROM Problem p
+      JOIN Users u ON p.createby = u.usersid
+      JOIN Category c ON p.categoryid = c.categoryid
+      JOIN Status s ON p.statusid = s.statusid
+      JOIN Department d ON p.departmentid = d.departmentid
+      JOIN ServiceLevelAgreement sla ON p.priorityid = sla.priorityid
+      ORDER BY p.problemid DESC
+      LIMIT 3;
+    `);
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Database error:", err);
+    res.status(500).json({ error: "Database error" });
+  }
+};
+
 export const getLatestWorkAssignment = async (req, res) =>  {
   
   try {
@@ -168,7 +202,7 @@ export const getMyWorkHistory = async (req, res) =>  {
 	    join users u2 on p.createby = u2.usersid
      
       WHERE wk.usersid = $1
-      ORDER BY p.problemid DESC
+      ORDER BY wk.assignat DESC
       ;`, [req.session.user.usersid]);
       res.json(result.rows);
   } catch (err) {
@@ -259,10 +293,10 @@ export const getDepartment = async (req, res) => {
   }
 };
 
+
 export const getPriority = async (req, res) => {
   try {
       const result = await pool.query("SELECT priorityid, prioritylevel FROM servicelevelagreement");
-        console.log(result.rows);
       res.json(result.rows);
     } catch (err) {
         console.error(err);
@@ -365,11 +399,60 @@ export const updateProblem = async (req, res) => {
             
       }
       
-      
-
       res.json({ success: true });
     }catch(err){
       console.error(err);
       res.status(500).json({ success: false, message: "Database error" });
     }
 };
+
+
+
+export const getDropdownWorker = async (req,res) => {
+    try {
+      const problemId = req.params.problemId;
+      const result = await pool.query(`
+        select CONCAT(u.firstname ,' ', u.lastname) AS assignby,
+        u.usersid 
+        FROM users u
+        Join workassignment wk on u.usersid = wk.usersid
+        where wk.problemid = $1 ;
+        `,[problemId]);
+        res.json(result.rows);
+    } catch (error) {
+      res.status(500).json({ success: false, message: "Database error" });
+    }
+}
+
+export const getStatus = async (req,res) => {
+  try {
+      const result = await pool.query("SELECT statusid, statusstate FROM status ORDER BY statusid asc");
+        console.log(result.rows);
+      res.json(result.rows);
+    } catch (err) {
+        console.error(err);
+      res.status(500).json({ error: "เกิดข้อผิดพลาด" });
+    }
+};
+
+export const editProblemAdmin = async(req,res) => {
+  try{
+    const problemid = req.params.problemid;
+    const statusid = req.body.statusid;
+    const priorityid = req.body.priorityid;
+    
+    const result = await pool.query(`
+
+      UPDATE problem
+      SET statusid = ${statusid} , priorityid = ${priorityid}
+      WHERE problemid = ${problemid};
+      `);
+      res.json({success : true});
+
+  }catch(error) {
+    res.status(500).json({error : "เกิดข้อผิดพลาด"});
+    console.log(error);
+  }
+}
+
+
