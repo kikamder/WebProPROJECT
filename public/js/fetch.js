@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded',async () => {
             <td>${row.teamname}</td>
             <td>${row.departmentname || "-"}</td>
             <td>${row.phonenumber || "-"}</td>
+            <td>${row.rolename || "-"}</td>
             <td>
                <a href=/editUser/${row.usersid}>แก้ไขข้อมูล</a>
             </td>
@@ -48,7 +49,7 @@ document.addEventListener('DOMContentLoaded',async () => {
             const fullname = document.getElementById("firstname");
             if (fullname) fullname.textContent = user.fullname || "ไม่ระบุชื่อ";
 
-            const menus = ["menu-Admin-add,menu-alluser","menu-adminHome","menu-home", "menu-totalproblem", "menu-mywork", "menu-myReportedHistory", "menu-myworkhistory"];
+            const menus = ["menu-Admin-add","menu-alluser","menu-adminHome","menu-home", "menu-totalproblem", "menu-mywork", "menu-myReportedHistory", "menu-myworkhistory"];
             menus.forEach(id => {
             const navbar = document.getElementById(id);
 

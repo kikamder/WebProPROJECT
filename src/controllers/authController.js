@@ -29,7 +29,7 @@ export const login = async (req, res) => {
       JOIN role r ON u.roleid = r.roleid
       JOIN teams t ON u.teamid = t.teamid
       JOIN department d ON t.departmentid = d.departmentid
-      WHERE u.usersemail = $1
+      WHERE u.usersemail = $1 
         AND u.password = crypt($2, u.password)
       LIMIT 1;
     `;
@@ -40,8 +40,11 @@ export const login = async (req, res) => {
     if (rows.length === 0) {
       return res.status(401).send("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง หรือบัญชีถูกระงับ");
     }
-
     const u = rows[0];
+    if(u.rolename == 'None') {
+      return res.status(401).send("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง หรือบัญชีถูกระงับ");
+    }
+    
     req.session.user = {
       usersid: u.usersid,
       firstname: u.firstname,

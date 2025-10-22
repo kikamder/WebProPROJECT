@@ -275,6 +275,7 @@ export const getUserAll = async (req,res) => {
         CONCAT(u.firstname,' ' ,u.lastname) AS fullname,
         t.teamname,
         d.departmentname,
+        r.rolename,
         u.phonenumber
       FROM users u
       JOIN role r ON u.roleid = r.roleid

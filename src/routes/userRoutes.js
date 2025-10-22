@@ -73,7 +73,7 @@ router.get("/main/allUser", requireAuth , (req, res) => {
 })
 
 router.get("/editUser/:usersid",requireAuth,requireRole('Admin'), (req, res) => {
-  const filePath = path.join(__dirname, "../../public/page/adduserForm.html");
+  const filePath = path.join(__dirname, "../../public/page/editUser.html");
   return res.sendFile(filePath);
 }) 
 

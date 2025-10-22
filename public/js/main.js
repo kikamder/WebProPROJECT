@@ -448,7 +448,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     const data = res.data;
                     if(data.success) {
                         alert("อัพเดตข้อมูลสำเร็จ");
-                        location.reload;
+                        location.reload();
                     }
                 
                 })
@@ -482,13 +482,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const firstname = document.getElementById("firstname").value.trim();
         const lastname = document.getElementById("lastname").value.trim();
-        const department = document.getElementById("departmentDropdown").value;
+        const telnum = document.getElementById("telnum").value;
         const teamId = document.getElementById("teamDropdown").value;
         const roleId = document.getElementById("roleDropdown").value;
         const password = document.getElementById("password").value.trim();
         const email = document.getElementById("email").value.trim();
 
-        if (!firstname || !lastname || !department || !teamId || !roleId || !password || !email) {
+        if (!firstname || !lastname || !telnum || !teamId || !roleId || !password || !email) {
         alert("กรุณากรอกข้อมูลให้ครบทุกช่อง");
         return;
         }
@@ -506,7 +506,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (res.data.success) {
             alert("เพิ่มข้อมูลสำเร็จ!");
             formadd.reset();
-            window.location.href = "/main";
+            this.location.reload();
         } else {
             alert("เพิ่มข้อมูลไม่สำเร็จ: " + res.data.message);
         }
