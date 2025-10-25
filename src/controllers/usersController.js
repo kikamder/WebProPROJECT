@@ -374,12 +374,12 @@ export const submitEditUser = async (req,res) => {
   //=================================================
 export const adduser = async (req,res) => {
   try {
-    const { firstname, lastname, email, password, teamId, roleId } = req.body;
+    const { firstname, lastname, email, password, teamId, roleId ,telnum} = req.body;
     const createat = new Date();// เวลาปัจจุบัน
     const result = await pool.query(`
-      INSERT INTO users (firstname, lastname, usersemail, password, teamid, roleid,createat)
-      VALUES ($1, $2, $3,crypt($4, gen_salt('bf')), $5, $6,NOW());
-    `, [firstname, lastname, email, password, teamId, roleId]);
+      INSERT INTO users (firstname, lastname, usersemail, password, teamid, roleid,createat,phonenumber)
+      VALUES ($1, $2, $3,crypt($4, gen_salt('bf')), $5, $6,NOW(),$7);
+    `, [firstname, lastname, email, password, teamId, roleId,telnum]);
     res.json({ success: true});
   } catch (err) {
     console.error(" Error inserting user:", err);

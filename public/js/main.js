@@ -531,7 +531,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const telnum = document.getElementById("telnum").value;
         const teamId = document.getElementById("teamDropdown").value;
         const roleId = document.getElementById("roleDropdown").value;
-        const password = document.getElementById("password").value.trim();
+        const password = document.getElementById("password").value
         const email = document.getElementById("email").value.trim();
 
         if (!firstname || !lastname || !telnum || !teamId || !roleId || !password || !email) {
@@ -543,6 +543,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const res = await axios.post("/add-user", {
             firstname,
             lastname,
+            telnum,
             teamId,
             roleId,
             password,
