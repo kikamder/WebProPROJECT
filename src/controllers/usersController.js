@@ -37,7 +37,9 @@ import bcrypt from "bcrypt";
 //   }
 // };
 
-
+  //==============================================
+  // สำหรับเช็คข้อมูลของ User ใน sessionนั้น
+  //==============================================
 export const getUser = async (req, res) => {
   try {
     const userId = (req.session && req.session.user && req.session.user.usersid) || req.session.usersid;
@@ -72,6 +74,10 @@ export const getUser = async (req, res) => {
   }
 };
 
+
+  //================================================
+  // สำหรับเช็คข้อมูลของ User ใน sessionนั้น จาก query Parameter
+  //=================================================
 export const getUserParm = async (req, res) => {
   try {
     const userId = req.params.userid;
@@ -108,7 +114,7 @@ export const getUserParm = async (req, res) => {
 
 
 
-// ดึง users ทั้งหมด
+// ดึง users ทั้งหมด ไม่เกี่ยวอะไร เทสระบบเฉยๆ
 export const getUsers = async (req, res) => {
   try {
     const { rows } = await pool.query(`
@@ -121,6 +127,10 @@ export const getUsers = async (req, res) => {
   }
 };
 
+
+  //================================================
+  // สำหรับดึงข้อมูลในหน้า Home ช่าง
+  //=================================================
 export const getTechHome = async (req, res) => {
   try {
     const userId = req.user.usersid;
@@ -161,6 +171,10 @@ export const getTechHome = async (req, res) => {
   }
 };
 
+
+  //================================================
+  // สำหรับดึงข้อมูลในหน้า Home User
+  //=================================================
 export const getuserHome = async (req, res) => {
     const userId = req.user.usersid;
     if (!userId) {
@@ -209,6 +223,10 @@ export const getuserHome = async (req, res) => {
     }
 };
 
+
+  //================================================
+  // สำหรับดึงข้อมูลในหน้า Home Admin
+  //=================================================
 export const getadminHome = async (req,res) => {
 
   try{
@@ -266,6 +284,9 @@ export const getadminHome = async (req,res) => {
   }
 }
 
+  //================================================
+  // สำหรับดึงข้อมูลพนักงานทั้งหมด สำหรับ Admin
+  //=================================================
 export const getUserAll = async (req,res) => {
   try {
     const result = await pool.query(`
@@ -291,6 +312,9 @@ export const getUserAll = async (req,res) => {
   }
 }
 
+  //================================================
+  // สำหรับดึงข้อมูล Team ทั้งหมด
+  //=================================================
 export const getTeam = async (req, res) => {
   try {
     const result = await pool.query("SELECT * from teams");
@@ -302,6 +326,9 @@ export const getTeam = async (req, res) => {
   }
 };
 
+  //================================================
+  // สำหรับดึงข้อมูล Role ทั้งหมด
+  //=================================================
 export const getRole = async (req,res) => {
   try {
       const result = await pool.query("SELECT * FROM role");
@@ -314,6 +341,9 @@ export const getRole = async (req,res) => {
 };
 
 
+  //================================================
+  // สำหรับ Admin ในการแก้ไขข้อมูลของพนักงานแต่ละคน
+  //=================================================
 export const submitEditUser = async (req,res) => {
   try {
     const userid = req.body.userid;
@@ -338,6 +368,10 @@ export const submitEditUser = async (req,res) => {
     }
 };
 
+
+  //================================================
+  // สำหรับบันทึกข้อมูลพนักงานที่ต้องการเพิ่ม
+  //=================================================
 export const adduser = async (req,res) => {
   try {
     const { firstname, lastname, email, password, teamId, roleId } = req.body;

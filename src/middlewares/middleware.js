@@ -10,3 +10,4 @@ export const initMiddleware = (app) => {
   app.use(authGuard);
   app.use(attachUser);
 };
+

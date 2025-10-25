@@ -1,9 +1,10 @@
 import pool from "../dbConfig/db.js";
 
 
+  //==============================================
+  // ดึงข้อมูล problem ทั้งหมด
+  //==============================================
 export const getProblemlist = async (req, res) =>  {
-  
-
   try {
     const result = await pool.query(`
       SELECT 
@@ -35,6 +36,9 @@ export const getProblemlist = async (req, res) =>  {
 };
 
 
+  //==============================================
+  // ดึงการแจ้งล่าสุด 3 ปัญหา ของ user
+  //==============================================
 export const getProblemlastest = async (req, res) =>  {
   
   try {
@@ -70,6 +74,9 @@ export const getProblemlastest = async (req, res) =>  {
 };
 
 
+  //==============================================
+  // สำหรับดูปัญหาของหมดของระบบ 3 อันล่าสุด สำหรับ admin
+  //==============================================
 export const getAllProblemLastest = async (req, res) =>  {
   
   try {
@@ -103,6 +110,10 @@ export const getAllProblemLastest = async (req, res) =>  {
   }
 };
 
+
+  //==============================================
+  //  สำหรับดูงานที่รับมาล่าสุด 3งาน สำหรับช่าง
+  //==============================================
 export const getLatestWorkAssignment = async (req, res) =>  {
   
   try {
@@ -139,6 +150,10 @@ export const getLatestWorkAssignment = async (req, res) =>  {
   }
 };
 
+
+  //==============================================
+  // สำหรับดึงข้อมูลงานที่ ช่างกดรับ
+  //==============================================
 export const getMyWorkAssignment = async (req, res) =>  {
   try {
       const result = await pool.query(`
@@ -175,6 +190,10 @@ export const getMyWorkAssignment = async (req, res) =>  {
   }
 };
 
+
+  //==============================================
+  // สำหรับดึงข้อมูลประวัติการทำงานของช่าง
+  //==============================================
 export const getMyWorkHistory = async (req, res) =>  {
   try {
       const result = await pool.query(`
@@ -211,6 +230,9 @@ export const getMyWorkHistory = async (req, res) =>  {
   }
 };
 
+  //==============================================
+  // สำหรับดึงข้อมูลประวัติการแจ้งปัญหาของ user
+  //==============================================
 export const getMyHistory = async (req, res) =>  {
   try {
     const result = await pool.query(`
@@ -243,6 +265,10 @@ export const getMyHistory = async (req, res) =>  {
   }
 };
 
+
+  //==============================================
+  // สำหรับเพิ่มข้อมูลปัญหา
+  //==============================================
 export const addProblem = async (req, res) => {
 
   const { title, description, categoryid, statusid, departmentid, priorityid, location, comment } = req.body;
@@ -264,6 +290,9 @@ export const addProblem = async (req, res) => {
 
 };
 
+  //==============================================
+  // สำหรับดูว่ามีข้อมูลใน sessionมั้ย
+  //==============================================
 export const checkSession = (req, res) => {
   if (req.session && req.session.user) {
       return res.json({ loggedIn: true, user: req.session.user });
@@ -271,6 +300,10 @@ export const checkSession = (req, res) => {
     res.json({ loggedIn: false });
 }
 
+
+  //==============================================
+  // สำหรับดึงข้อมูล Category
+  //==============================================
 export const getCategory = async (req, res) => {
    try {
     const result = await pool.query("SELECT categoryid, categoryname FROM category");
@@ -282,6 +315,9 @@ export const getCategory = async (req, res) => {
   }
 };
 
+  //==============================================
+  // สำหรับดึงข้อมูล Department
+  //==============================================
 export const getDepartment = async (req, res) => {
   try {
     const result = await pool.query("SELECT departmentid, departmentname FROM department");
@@ -294,6 +330,9 @@ export const getDepartment = async (req, res) => {
 };
 
 
+  //==============================================
+  // สำหรับดึงข้อมูล Priority
+  //==============================================
 export const getPriority = async (req, res) => {
   try {
       const result = await pool.query("SELECT priorityid, prioritylevel FROM servicelevelagreement");
@@ -305,12 +344,13 @@ export const getPriority = async (req, res) => {
 };
 
 
+  //==============================================
+  // เพิ่มข้อมูลงานที่ช่างกดรับ
+  //==============================================
 export const acceptWorkAssignment = async (req, res) => {
   const problemid = req.params.id;
   const status = req.body.statusstate; 
   const workby = req.session.user.usersid; 
-
-  
 
   try {
   await pool.query("BEGIN");
@@ -354,6 +394,9 @@ export const acceptWorkAssignment = async (req, res) => {
 };
 
 
+  //==============================================
+  // ยกเลิกข้อมูลที่ช่างกดรับ
+  //==============================================
 export const cancelWorkAssignment = async (req, res) => {
   const problemid = req.params.id;
   const deleteby = req.session.user.usersid; 
@@ -370,6 +413,10 @@ export const cancelWorkAssignment = async (req, res) => {
   }
 };
 
+
+  //==============================================
+  // อัปเดตข้อมูลสำหรับงานที่ช่างกดรับ
+  //==============================================
 export const updateProblem = async (req, res) => {
     try{
       
@@ -408,6 +455,9 @@ export const updateProblem = async (req, res) => {
 
 
 
+  //==============================================
+  // สำหรับดึงข้อมูล ดูว่าใครรับงานปัญหานั้นอยู่ สำหรับ Admin
+  //==============================================
 export const getDropdownWorker = async (req,res) => {
     try {
       const problemId = req.params.problemId;
@@ -424,6 +474,9 @@ export const getDropdownWorker = async (req,res) => {
     }
 }
 
+  //==============================================
+  // สำหรับดึงข้อมูล Status
+  //==============================================
 export const getStatus = async (req,res) => {
   try {
       const result = await pool.query("SELECT statusid, statusstate FROM status ORDER BY statusid asc");
@@ -435,6 +488,10 @@ export const getStatus = async (req,res) => {
     }
 };
 
+
+  //==============================================
+  // สำหรับแก้ไขข้อมูลของ Admin ที่กดแก้ไขที่ปัญหานั้น
+  //==============================================
 export const editProblemAdmin = async(req,res) => {
   try{
     const problemid = req.params.problemid;

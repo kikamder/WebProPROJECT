@@ -6,7 +6,9 @@ import session from "express-session";
 import pool from "../dbConfig/db.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-
+  //================================================
+  // สำหรับการเช็คสิทธิ์ ถ้ายังไม่มีให้ไป login
+  //=================================================
 export const requireAuth = (req, res, next) => {
     if (!req.session || !req.session.user) {
         return res.redirect('/login');
@@ -14,6 +16,9 @@ export const requireAuth = (req, res, next) => {
     next();
 }
 
+  //================================================
+  // สำหรับ ถ้า loginแล้ว แล้วจะไป /login จะไม่ให้ไป
+  //=================================================
 export const redirectIfAuth = (req, res, next) => {
   if (req.session.user) {
     return res.redirect('/main');
@@ -22,7 +27,9 @@ export const redirectIfAuth = (req, res, next) => {
 };
 
 
-
+  //================================================
+  // สำหรับให้ express ให้สิทธิ์เข้าถึงของไฟล์ 
+  //=================================================
 export const authGuard = (req, res, next) => {
     // Allow some public paths (login-related and API)
     const openPaths = ["/", "/login", "/logout", "/getUser"];
@@ -35,6 +42,9 @@ export const authGuard = (req, res, next) => {
     return requireAuth(req, res, next);
 };
 
+  //================================================
+  // อันนี้ เป็นการสร้างตาราง session เฉยๆ ไม่ค่อยเข้าใจเหมือนกัน 
+  //=================================================
 const PgSession = connectPgSimple(session);
 export const sessionMiddleware = session({
   store: new PgSession({ 
@@ -51,6 +61,10 @@ export const sessionMiddleware = session({
       
 });
 
+
+  //================================================
+  // แนบข้อมูลของ sesstion ให้ใช้ได้ใน req.user จะได้ไม่ต้องเขียนยาว
+  //=================================================
 export const attachUser = (req, res, next) => {
   if (req.session && req.session.user) {
     req.user = req.session.user;
@@ -60,6 +74,9 @@ export const attachUser = (req, res, next) => {
 };
 
 
+  //================================================
+  // สำหรับการให้สิทธิ์แต่ละ role ในการเข้าถึงอะไรต่างๆ
+  //=================================================
 export const requireRole = (...allowedRoles) => {
   return (req, res, next) => {
     const user = req.session.user;
@@ -76,7 +93,7 @@ export const requireRole = (...allowedRoles) => {
 
     // 3. ถ้า role ไม่ตรง → redirect ตามสิทธิ์
     if (user.rolename === "Admin") {
-      return res.redirect('/Admain'); // สะกดให้ถูกนะครับ ไม่ใช่ /Admain 😆
+      return res.redirect('/Admain');
     } else {
       return res.redirect('/main');
     }

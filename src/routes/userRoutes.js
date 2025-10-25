@@ -26,7 +26,10 @@ router.get("/login", redirectIfAuth, (req, res) => {
 });
 
 
-
+router.get("/changepassword", requireAuth,(req,res) => {
+  const filePath = path.join(__dirname, "../../public/page/newPassword.html");
+  return res.sendFile(filePath);
+})
 router.post("/login", login)
 router.post("/login/changepassword" , requireAuth,changePassword);
 router.post("/logout", logout);

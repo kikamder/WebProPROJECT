@@ -1,7 +1,9 @@
 document.addEventListener('DOMContentLoaded',async () => {    
   let allData = [];
   
-
+  // =============================================================
+  //  หน้าสำหรับ ดึงข้อมูลของพนักงานทุกคนมาโชว์ในตาราง  หน้า userlist.html
+  // ==============================================================
   const page_AdminDB_content = document.getElementById('page-AdminDB-content');
     if(page_AdminDB_content){
     axios.get("/main/adminaction/data")
@@ -40,6 +42,10 @@ document.addEventListener('DOMContentLoaded',async () => {
   }
 
 
+  
+  // ==============================================
+  // สำหรับการแสดง navbar ของแต่ละ Role ที่แตกต่างกันไป
+  // ==============================================
    const navbarNav = document.getElementById("navbarNav");
     const btnWork = document.getElementById("btnWork");
     if(navbarNav) {
@@ -82,9 +88,12 @@ document.addEventListener('DOMContentLoaded',async () => {
         .catch(err => console.error("Error loading user info:", err));
     }
  
+
+  // =================================================================
+  // สำหรับการแสดง ProblemList ทั้งหมด ลงในตาราง หน้า problemTable.html
+  // =================================================================
     const page_problem_Container = document.getElementById('page-problem-content');
     if(page_problem_Container) {
-      
     axios("/main/problemlist/data")
       .then(res => {
         data = res.data;
@@ -121,6 +130,9 @@ document.addEventListener('DOMContentLoaded',async () => {
     }
   
     
+  // =======================================================================================================
+  // สำหรับการแสดง problem สำหรับช่าง ที่ช่างคนนั้นกดรับงานไปลงในตาราง ไม่แสดงงานที่แก้ไขแล้ว หน้า myWorkAssignment.html
+  // =======================================================================================================
   const page_myWorkassignment_content = document.getElementById('page-myWorkassignment-content');
   if(page_myWorkassignment_content) {
     axios.get("/main/myWorkAssignment/data")
@@ -174,6 +186,10 @@ document.addEventListener('DOMContentLoaded',async () => {
       });
   }
 
+
+  // ==========================================================================
+  // สำหรับการแสดงประวัติการทำงานทั้งหมด ของช่าง โดยรวมงานที่ได้รับการแก้ไขแล้ว ลงในตารางด้วย
+  // ===========================================================================
     const page_myWorkHistory_content = document.getElementById('page-myWorkHistory-content');
     if(page_myWorkHistory_content) {
       axios.get("/main/myWorkHistory/data")
@@ -225,6 +241,9 @@ document.addEventListener('DOMContentLoaded',async () => {
 
     }
 
+  // ==================================================================================================================================
+  // สำหรับการแสดงข้อมูลต่างๆในหน้า home สำหรับ Role ที่แตกต่างกันไป ในหน้า home.html สำหรับช่าง กับ userทั่วไป และ หน้า Adminhome.html สำหร้บ Admin
+  // ==================================================================================================================================
   const page_home_Container = document.getElementById('page-main-content');
    if(page_home_Container) {
     axios.get("/main/users/data")
@@ -311,7 +330,9 @@ document.addEventListener('DOMContentLoaded',async () => {
 
 
   
-    //fetch and display latest 3 problems in home page
+    //============================================================================================
+    // แสดงข้อมูลในตาราง 3 ข้อมูลล่าสุด สำหรับ Role ต่างๆในหน้า home.html และ Adminhome.html
+    //============================================================================================
     axios.get("/main/users/data")
     .then(res => {
       data = res.data;
@@ -434,10 +455,11 @@ document.addEventListener('DOMContentLoaded',async () => {
       document.getElementById("reportBox_lastest").innerHTML = 
         '<li class="text-danger py-3">เกิดข้อผิดพลาดในการโหลดข้อมูล</li>';
       });
-    
-
   }
 
+  //===================================================
+  //หน้าสำหรับประวัติการแจ้งของ User ทั่วไป หน้า myHistory.html
+  //====================================================
   const page_history_Container = document.getElementById('page-history-content');
   if (page_history_Container) {
     axios.get("/main/myHistory/data")
@@ -477,10 +499,11 @@ document.addEventListener('DOMContentLoaded',async () => {
       });
   }
 
-
-  //ส่งฟอร์มไป server (มีเฉพาะหน้าที่มีฟอร์มแจ้งปัญหา)
+  //=============================================================
+  //ส่งฟอร์มไป server (มีเฉพาะหน้าที่มีฟอร์มแจ้งปัญหา) problemFrom.html
+  //===============================================================
   const form = document.getElementById("problemForm");
-if (form) {
+  if (form) {
   const fullname = document.getElementById("fullname");
 
   axios.get("/api/check-session", { withCredentials: true })
@@ -540,8 +563,9 @@ if (form) {
   
     
     
-
+  //==============================================
   //ดึงข้อมูล dropdown เฉพาะหน้าที่มี element เหล่านั้น
+  //==============================================
   const dropdown = document.getElementById("categoryDropdown");
   if(dropdown){ 
     let loaded = false; 

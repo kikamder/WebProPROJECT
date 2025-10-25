@@ -6,12 +6,18 @@ import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+  //==============================================
+  // ปุ่ม log out
+  //==============================================
 export const logout = (req, res) => {
   req.session.destroy(() => {
     res.redirect("/");
   });
 }
 
+  //==============================================
+  // ปุ่ม log in
+  //==============================================
 export const login = async (req, res) => {
   const { email, password } = req.body;
   console.log("email : " ,email);
@@ -57,8 +63,7 @@ export const login = async (req, res) => {
 
     console.log('ข้อมูล Session User:', req.user);
   if(u.ispasswordchange === false){
-    const filePath = path.join(__dirname, "../../public/page/newPassword.html");
-    return res.sendFile(filePath);
+    return res.redirect("/changepassword");
   }
   if(u.rolename == "Admin") return res.redirect("/AdMain");
 
@@ -69,8 +74,16 @@ export const login = async (req, res) => {
   }
 };
 
+
+  //==============================================
+  // สำหรับ form เปลี่ยนรหัส
+  //==============================================
 export const changePassword = async (req, res) => {
-  const { confirm_password } = req.body;
+  const { password, confirm_password } = req.body;
+  if(password != confirm_password) {
+    return res.json({ message : "รหัสผ่านไม่ตรงกัน"})
+  }
+  try{
   const q = `
     UPDATE users
     SET password = crypt($1, gen_salt('bf')),
@@ -78,8 +91,13 @@ export const changePassword = async (req, res) => {
     WHERE usersid = $2
   `;
   const {rows} = await pool.query(q,[confirm_password, req.session.user.usersid]);
-  req.session.user.ispasswordchange = true;
   console.log('ข้อมูล Session User:', req.user);
-  return res.redirect("/main");
+  return res.json({success : true});
+
+  }catch(error) {
+    console.error(error);
+    return res.status(500).json({message : "เกิดข้อผิดพลาด"})
+  }
+  
 };
 

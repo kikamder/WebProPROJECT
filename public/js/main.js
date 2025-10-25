@@ -1,28 +1,61 @@
 document.addEventListener('DOMContentLoaded', function() {
     
     // ===================================
-    // 1. Form Validation
+    // สำหรับหน้าเปลี่ยนรหัส newPassword.html
     // ===================================
-    const form = document.getElementById('loginForm');
-    const passwordInput = document.getElementById('password');
-    const confirmPasswordInput = document.getElementById('confirm_password');
-    const errorDiv = document.getElementById('passwordError');
+    const changepasswordForm = document.getElementById('changepasswordForm');
+    if(changepasswordForm){
+        changepasswordForm.addEventListener('submit', async (e) => {
+            e.preventDefault(); // ป้องกันไม่ให้ form โหลดหน้าใหม่
 
-    if (form && passwordInput && confirmPasswordInput && errorDiv) {
-        form.addEventListener('submit', (event) => {
-            if (passwordInput.value !== confirmPasswordInput.value) {
-                errorDiv.textContent = 'รหัสผ่านทั้งสองช่องไม่ตรงกัน';
-                errorDiv.style.color = 'red';
-                event.preventDefault();  // ป้องกันการส่งฟอร์มแล้วโหลดหน้าใหม่
-            } else {
-                errorDiv.textContent = '';
-            }
-        });
+            const password = document.getElementById('password').value;
+            const confirm_password = document.getElementById('confirm_password').value;
+
+            
+                axios.post('/login/changepassword', {
+                    password : password, 
+                    confirm_password : confirm_password
+                    }).then(res => {
+                        data = res.data
+                        if(data.success) {
+                            window.location.assign('/main');
+                        }
+                        else if(data.message) {
+                            alert(data.message); // แสดงข้อความจาก backend
+                            location.reload();
+                        }
+                    })
+                    .catch( err => {
+                        if (err.response) {
+                            alert(err.response.data.message || "เกิดข้อผิดพลาด");
+                            } else {
+                            alert("ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้");
+                        }
+                    })
+        
+       });
     }
+    // const form = document.getElementById('loginForm');
+    // const passwordInput = document.getElementById('password');
+    // const confirmPasswordInput = document.getElementById('confirm_password');
+    // const errorDiv = document.getElementById('passwordError');
 
-    // ===================================
-    // 2. Modal เปิด/ปิด (แบบธรรมดา)
-    // ===================================
+    // if (form && passwordInput && confirmPasswordInput && errorDiv) {
+    //     form.addEventListener('submit', (event) => {
+    //         if (passwordInput.value !== confirmPasswordInput.value) {
+    //             errorDiv.textContent = 'รหัสผ่านทั้งสองช่องไม่ตรงกัน';
+    //             errorDiv.style.color = 'red';
+    //             event.preventDefault();  // ป้องกันการส่งฟอร์มแล้วโหลดหน้าใหม่
+    //         } else {
+    //             errorDiv.textContent = '';
+    //         }
+    //     });
+    // }
+
+
+    // ===============================================
+    // 2. Modal เปิด/ปิด (แบบธรรมดา) (หน้า popup เด้งขึ้นมา) 
+    // ================================================
     const openBtn = document.getElementById('openModal');
     const closeBtn = document.getElementById('closeModal');
     const modal = document.getElementById('modal');
@@ -58,7 +91,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // ===================================
     document.addEventListener('click', function(e) {
             
+            //=====================================
             // === เช็ค li ก่อน (สำหรับ reportBox) ===
+            //======================================
         const li = e.target.closest('li.report-item');
         const reportBox = e.target.closest('#reportBox_lastest');
 
@@ -84,7 +119,11 @@ document.addEventListener('DOMContentLoaded', function() {
             return; // จบเคส li
         }
 
+
+
+        //============================
         // === เช็ค td (สำหรับตาราง) ===
+        // ============================
         const td = e.target.closest('td');
         if (!td) return;
 
@@ -148,19 +187,13 @@ document.addEventListener('DOMContentLoaded', function() {
             }else {
                 openProblemDetail(data);
             }
-            
-            
-            
-            
-            
         }
-
-
-        
-        
     });
 
 
+  //==============================================
+  // สำหรับหน้าที่มีปุ่ม acceptBtn ปุ่มรับงาน สำหรับช่างเท่านั้น
+  //==============================================
     const acceptBtn = document.getElementById("acceptButton");
         if (acceptBtn) {
             acceptBtn.addEventListener("click", (e) => {
@@ -201,6 +234,9 @@ document.addEventListener('DOMContentLoaded', function() {
             
         }
 
+  //==============================================
+  // สำหรับหน้าที่มีปุ่ม workCancelbtn ปุ่มยกเลิกงาน สำหรับช่างเท่านั้น
+  //==============================================
     const workCancelbtn = document.getElementById("workCancelbtn");
     if(workCancelbtn) {
         workCancelbtn.addEventListener("click", (e) => {
@@ -227,7 +263,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         });
     }
-
+  //==============================================
+  // สำหรับหน้าที่มีปุ่ม workUpdate ปุ่มแก้ไขงาน สำหรับช่างเท่านั้น
+  //==============================================
     const editsection = document.getElementById("editsectionshow");
     const editconfirmbtn = document.getElementById("editconfirmbtn");
     const workUpdatebtn = document.getElementById("workUpdatebtn");
@@ -293,65 +331,69 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 
-  const attachBtn = document.getElementById("attachBtn");
-  const fileInput = document.getElementById("fileInput");
-  const previewArea = document.getElementById("previewArea");
-  if(attachBtn && fileInput && previewArea){
-  // ====================================================
-  // =========== เมื่อคลิกปุ่ม attach → เปิดเลือกไฟล์ ===========
-  // ====================================================
-  attachBtn.addEventListener("click", () => fileInput.click());
+//   const attachBtn = document.getElementById("attachBtn");
+//   const fileInput = document.getElementById("fileInput");
+//   const previewArea = document.getElementById("previewArea");
+//   if(attachBtn && fileInput && previewArea){
+//   // ====================================================
+//   // =========== เมื่อคลิกปุ่ม attach → เปิดเลือกไฟล์ ===========
+//   // ====================================================
+//   attachBtn.addEventListener("click", () => fileInput.click());
 
-  // เมื่อผู้ใช้เลือกไฟล์
-  fileInput.addEventListener("change", (event) => {
-    const files = Array.from(event.target.files);
-    previewArea.innerHTML = ""; // เคลียร์ preview เดิม
+//   // เมื่อผู้ใช้เลือกไฟล์
+//   fileInput.addEventListener("change", (event) => {
+//     const files = Array.from(event.target.files);
+//     previewArea.innerHTML = ""; // เคลียร์ preview เดิม
 
-    files.forEach(file => {
-      const fileType = file.type;
-      const fileBox = document.createElement("div");
-      fileBox.classList.add("preview-box");
+//     files.forEach(file => {
+//       const fileType = file.type;
+//       const fileBox = document.createElement("div");
+//       fileBox.classList.add("preview-box");
 
-      // ถ้าเป็นรูป (jpg, png)
-      if (fileType.startsWith("image/")) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const img = document.createElement("img");
-          img.src = e.target.result;
-          img.alt = file.name;
-          img.classList.add("preview-thumb");
+//       // ถ้าเป็นรูป (jpg, png)
+//       if (fileType.startsWith("image/")) {
+//         const reader = new FileReader();
+//         reader.onload = (e) => {
+//           const img = document.createElement("img");
+//           img.src = e.target.result;
+//           img.alt = file.name;
+//           img.classList.add("preview-thumb");
 
-          const name = document.createElement("p");
-          name.textContent = file.name;
-          name.classList.add("preview-name");
+//           const name = document.createElement("p");
+//           name.textContent = file.name;
+//           name.classList.add("preview-name");
 
-          fileBox.appendChild(img);
-          fileBox.appendChild(name);
-          previewArea.appendChild(fileBox);
-        };
-        reader.readAsDataURL(file);
-      }
-      // ถ้าเป็น PDF
-      else if (fileType === "application/pdf") {
-        const icon = document.createElement("div");
-        icon.classList.add("pdf-icon");
-        icon.textContent = "📄";
+//           fileBox.appendChild(img);
+//           fileBox.appendChild(name);
+//           previewArea.appendChild(fileBox);
+//         };
+//         reader.readAsDataURL(file);
+//       }
+//       // ถ้าเป็น PDF
+//       else if (fileType === "application/pdf") {
+//         const icon = document.createElement("div");
+//         icon.classList.add("pdf-icon");
+//         icon.textContent = "📄";
 
-        const name = document.createElement("p");
-        name.textContent = file.name;
-        name.classList.add("preview-name");
+//         const name = document.createElement("p");
+//         name.textContent = file.name;
+//         name.classList.add("preview-name");
 
-        fileBox.appendChild(icon);
-        fileBox.appendChild(name);
-        previewArea.appendChild(fileBox);
-      }
-        });
-    });
+//         fileBox.appendChild(icon);
+//         fileBox.appendChild(name);
+//         previewArea.appendChild(fileBox);
+//       }
+//         });
+//     });
 
-    }
+//     }
 
+
+
+  //============================================================
+  // สำหรับแอดมิน จะเป็นหน้าสำหรับแก้ไขข้อมูลพนักงาน หน้า editUser.html
+  //===========================================================
     const employeeForm123 = document.getElementById("employeeForm123");
-    
     if(employeeForm123) {
         const submitUserData = document.getElementById("submitUserData");
         const employeeId123 = document.getElementById("employeeId123");
@@ -426,7 +468,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
 
         
-
+        //==========================================
+        //หลังจากกดเลือกข้อมูลที่จะแก้ไขของพนักงาน แล้วกดส่ง
+        //===========================================
         submitUserData.addEventListener("click", () => {
             const selectedTeamId = team123.value;
             const selectedTeamName = team123.options[team123.selectedIndex].text;
@@ -471,7 +515,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 
-
+  //==============================================
+  // สำหรับแอดมินในการเพิ่มข้อมูลพนักงาน หน้า addUser.html
+  //==============================================
     const addBtn = document.getElementById("addUserBtn");
     const formadd = document.getElementById("Addform");
 
@@ -519,7 +565,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-    
+
 }); // ปิด DOMContentLoaded
 
 
@@ -529,33 +575,30 @@ document.addEventListener('DOMContentLoaded', function() {
  function loadAdminDropdowns(problemData) {
     console.log("กำลังโหลด dropdowns...");
 
-    // 🔹 โหลดผู้รับผิดชอบ
+    // โหลดผู้รับผิดชอบลง Dropdown ที่ admin ใช้ดูว่า ใครรับงานนี้บ้าง
     const assignDropdown = document.getElementById("assignDropdown");
     if (assignDropdown) {
-        assignDropdown.innerHTML = ""; // เคลียร์ของเดิม
+        assignDropdown.innerHTML = ""; 
 
-        const assignby = problemData.assignby; // ["Rapeephat Boontool"]
-        const usersid = problemData.usersid;   // [2]
+        const assignby = problemData.assignby; 
+        const usersid = problemData.usersid;   
 
         // วนลูปสร้าง <option>
         assignby.forEach((name, index) => {
             const option = document.createElement("option");
-            option.value = usersid[index]; // ดึงค่า id ตามลำดับเดียวกัน
-            option.textContent = name;     // แสดงชื่อผู้รับผิดชอบ
+            option.value = usersid[index]; 
+            option.textContent = name;     
             assignDropdown.appendChild(option);
         });
     }
 
+        // statusDropdown 
        const statusDropdown = document.getElementById("statusDropdown");
        if(statusDropdown){
             axios.get("/main/status")
             .then(res => {
                 const status = res.data;
-                
-                console.log(status)
-
-                
-
+        
                 status.forEach(status => {
                 const option = document.createElement("option");
                 option.textContent = status.statusstate;
@@ -566,7 +609,10 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             loadedstatus = true;
         }
-    // ปุ่มบันทึก admin
+
+
+    // ปุ่มบันทึก admin หลังจากเลือกข้อมูลใน dropdown ที่จะแก้ไขปัญหานั้นๆ
+    // เช่น  แก้ไข status, priority
     const saveAdminEdit = document.getElementById("saveAdminEdit");
         if(saveAdminEdit){
             saveAdminEdit.addEventListener("click", () => {
@@ -601,9 +647,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-// ===================================
-// 4. ฟังก์ชันเปิด Modal (ใช้ Bootstrap)
-// ===================================
+// =========================================
+// ฟังก์ชันเปิด Modal หรือ Popup (ใช้ Bootstrap)
+//
+// อันนี้มาถามทีหลังแล้วกัน
+//
+// =========================================
 window.openProblemDetail = function(problemData) {
     const modalElement = document.getElementById('problemDetailModal');
     // เช็คว่า Modal มีอยู่จริง
