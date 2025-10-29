@@ -434,9 +434,9 @@ export const updateProblem = async (req, res) => {
 
         await pool.query(`
           UPDATE workassignment
-          SET finishat = $1
-          WHERE problemid = $2;
-        `, [finishat, req.params.id]);
+          SET finishat = NOW()
+          WHERE problemid = $1;
+        `, [req.params.id]);
 
       } else {
           await pool.query(`

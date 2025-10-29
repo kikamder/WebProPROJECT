@@ -7,7 +7,7 @@
 /* change */
 body {
     font-family: 'Segoe UI', 'Tahoma', 'Arial', sans-serif;
-    background: linear-gradient(to bottom, #a8c2fb 0%, #647FBC 100%);
+    background: linear-gradient(to bottom, #91ADC8 0%, #647FBC 100%);
     min-height: 100vh;
     color: #333;
 }
@@ -25,7 +25,7 @@ body {
             background-color: #C1F366;
         }
         .card-pink {
-            background-color: #FF8DC7;
+            background-color: #e94242;
         }
         .card-title {
             font-size: 14px;

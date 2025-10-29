@@ -313,10 +313,10 @@ document.addEventListener('DOMContentLoaded', function() {
         workFinishbtn.addEventListener("click", (e) => {
             if(confirm("คุณต้องการเสร็จสิ้นงานนี้ใช่หรือไม่?")){
                 const problemId = e.target.dataset.problemId;
-                const datetime = new Date();
+                
                 axios.post(`/main/problem/update/${problemId}`, {
                     statusid: 4,
-                    finishat : datetime
+                    finishat : true
                     })
                     .then(res => {
                         if (res.data.success == true) {
