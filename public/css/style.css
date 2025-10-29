@@ -1,8 +1,10 @@
+/* change */
 body {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #CBDCEB 0%, #637AB9 100%);
     min-height: 100vh;
    
 }
+/* change */
 .renewPassword {
     background: linear-gradient(135deg, #fcfaee 100%, #ba7b6b 100%);
     display: flex;
@@ -36,17 +38,18 @@ body {
     color: #333;
     font-weight: 600;
 }
-
+/* change */
 .btn-login {
     margin-top: 20px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #667eea 0%, #4FB7B3 100%);
     border: none;
     padding: 12px;
     font-weight: 500;
 }
 
 .btn-login:hover {
-    background: linear-gradient(135deg, #5568d3 0%, #653a8b 100%);
+    background: linear-gradient(135deg, #667eea 0%, #4FB7B3 100%);
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
 }
+/* change */

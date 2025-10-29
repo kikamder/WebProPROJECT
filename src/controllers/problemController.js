@@ -7,7 +7,7 @@ import pool from "../dbConfig/db.js";
 export const getProblemlist = async (req, res) =>  {
   try {
     const result = await pool.query(`
-      SELECT 
+      SELECT DISTINCT 
         p.problemid,
         p.title,
         p.description,
@@ -18,13 +18,14 @@ export const getProblemlist = async (req, res) =>  {
         s.statusstate,
         d.departmentname,
         sla.prioritylevel,
-        p.comment
+        wk.finishat
         FROM Problem p
         JOIN Users u ON p.createby = u.usersid
         JOIN Category c ON p.categoryid = c.categoryid
         JOIN Status s ON p.statusid = s.statusid
         JOIN Department d ON p.departmentid = d.departmentid
         JOIN ServiceLevelAgreement sla ON p.priorityid = sla.priorityid
+        LEFT JOIN Workassignment wk on p.problemid = wk.problemid
         ORDER BY p.problemid DESC;
       `);
 

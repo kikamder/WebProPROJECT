@@ -571,7 +571,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
     
-
+let loadedstatus = false;
 // ฟังก์ชันโหลด dropdown ของ admin
  function loadAdminDropdowns(problemData) {
     console.log("กำลังโหลด dropdowns...");
@@ -594,21 +594,26 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
         // statusDropdown 
+       
        const statusDropdown = document.getElementById("statusDropdown");
-       if(statusDropdown){
+       if(statusDropdown && !loadedstatus){
+            loadedstatus = true;
             axios.get("/main/status")
             .then(res => {
                 const status = res.data;
         
                 status.forEach(status => {
                 const option = document.createElement("option");
+                option.value = status.statusid;
                 option.textContent = status.statusstate;
                 statusDropdown.appendChild(option);
                 })
+                
             }).catch( error => {
                 console.log("Error getting data " , error);
+                   loadedstatus = false;
             });
-            loadedstatus = true;
+            
         }
 
 
@@ -616,34 +621,37 @@ document.addEventListener('DOMContentLoaded', function() {
     // เช่น  แก้ไข status, priority
     const saveAdminEdit = document.getElementById("saveAdminEdit");
         if(saveAdminEdit){
-            saveAdminEdit.addEventListener("click", () => {
+            const newBtn = saveAdminEdit.cloneNode(true);
+            saveAdminEdit.parentNode.replaceChild(newBtn, saveAdminEdit);
+
+            newBtn.addEventListener("click", () => {
                 
                 const problemId = problemData.problemId;
-        if (!problemId) return alert("ไม่พบ Problem ID");
+                if (!problemId) return alert("ไม่พบ Problem ID");
 
-             const data = {
-                problemId: problemId,
-                statusid: document.getElementById("statusDropdown").value,
-                priorityid: document.getElementById("priorityDropdown").value
-            };
-            if(data.priorityid == "" && data.statusid == "") return;
+                    const data = {
+                        problemId: problemId,
+                        statusid: document.getElementById("statusDropdown").value,
+                        priorityid: document.getElementById("priorityDropdown").value
+                    };
+                    if(data.priorityid == "" && data.statusid == "") return;
 
-            axios.post(`/main/problemList/update/${problemId}`,{
-                statusid : data.statusid,
-                priorityid : data.priorityid
-            }).then(res => {
-                const data = res.data
-                if(data.success)
-                    alert("บันทึกเรียบร้อย")
-                location.reload();
+                    axios.post(`/main/problemList/update/${problemId}`,{
+                        statusid : data.statusid,
+                        priorityid : data.priorityid
+                    }).then(res => {
+                        const data = res.data
+                        if(data.success)
+                            alert("บันทึกเรียบร้อย")
+                        location.reload();
 
-            }).catch(error => {
-                alert("ERROR " , error);
+                    }).catch(error => {
+                        alert("ERROR " , error);
+                    });
+
+                console.log(problemId);
             });
-
-        console.log(problemId);
-    });
-}
+        }
 }
 
 

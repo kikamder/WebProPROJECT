@@ -119,7 +119,14 @@ document.addEventListener('DOMContentLoaded',async () => {
             <td>${row.statusstate || "-"}</td>
             <td>${row.prioritylevel || "-"}</td>
             <td>${row.location || "-"}</td>
-            <td>${row.comment || "-"}</td>
+            <td>
+              ${row.finishat 
+                ? new Date(row.finishat).toLocaleString("th-TH", { 
+                    timeZone: "Asia/Bangkok",
+                    dateStyle: "short",
+                    timeStyle: "short" }) 
+                : "ยังไม่เสร็จ"}
+            </td>
           `;
           table.appendChild(tr);
         });

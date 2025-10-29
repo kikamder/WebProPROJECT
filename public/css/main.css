@@ -4,14 +4,14 @@
     padding: 0;
     box-sizing: border-box;
 }
-
+/* change */
 body {
     font-family: 'Segoe UI', 'Tahoma', 'Arial', sans-serif;
-    background: rgb(236, 223, 204);
+    background: linear-gradient(to bottom, #a8c2fb 0%, #647FBC 100%);
     min-height: 100vh;
     color: #333;
 }
-
+/* change */
  .dashboard-card {
             border-radius: 8px;
             padding: 20px;
@@ -50,7 +50,7 @@ body {
         }
 /* ===== Navbar Styles ===== */
 .navbar-custom {
-    background-color: #E2B59A;
+    background-color: #4263b3;
     padding: 15px 0;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
@@ -83,17 +83,20 @@ body {
     background-color: rgb(27, 255, 27);
 }
 
-
+/* change */
 .user-info-box {
-    background-color: rgb(235, 166, 131);
+    background-color: whitesmoke;
     border-radius: 10px;
     
 }
+/* change */
 
+/* change */
 .notification-card {
-    background-color: rgb(233, 78, 78);
+    background-color: #113F67;
     border-radius: 10px;
 }
+/* change */
 
 /* โลโก้ logo style */
 /* .logo-box {
@@ -104,15 +107,17 @@ body {
     color: rgb(0, 0, 0);
     font-size: 20px;
 } */
-
+/* change */
 .logo-box i {
     font-size: 32px;
+    color: #31326F
 }
+/* change */
 
 .logo-text {
     font-size: 18px;
     font-weight: bold;
-    color: #ffffff;
+    color: black;
     text-align: center;
     padding: 0 10px;
 }
@@ -120,10 +125,11 @@ body {
 .nav-center {
     gap: 20px;
 }
-
+/* change */
 .nav-btn {
     
-    background: linear-gradient(135deg, #B77466 0%, #b8887f 100%) !important;
+    /* background: linear-gradient(135deg, #B77466 0%, #b8887f 100%) !important; */
+    background: #4FB7B3;
     color: rgb(0, 0, 0) !important;
     padding: 15px 30px !important;
     border-radius: 10px;
@@ -133,14 +139,13 @@ body {
     white-space: nowrap;
     box-shadow: 0 4px 10px rgba(80, 77, 77, 0.4);
 }
-
 .nav-btn:hover,
 .nav-btn.active {
-    background: linear-gradient(135deg, #f0813b 0%, #ce7e4d 100%) !important;
+    background: #637AB9;
     transform: translateY(-2px);
     box-shadow: 0 6px 15px rgba(80, 77, 77, 0.4);
 }
-
+/* change */
 #menu-home,
 #menu-totalproblem,
 #menu-mywork,
@@ -180,6 +185,7 @@ body {
 /* ===== Home Page Styles ===== */
 
 /* Welcome Banner */
+/* change */
 .welcome-banner {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     padding: 40px;
@@ -187,7 +193,7 @@ body {
     color: white;
     box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
-
+/* change */
 .date-display {
     background: rgba(255,255,255,0.2);
     padding: 10px 20px;
@@ -393,16 +399,17 @@ body {
 }
 
 /* ===== Report Form Page Styles ===== */
+/* change */
 .form-container {
-    background-color: #FCFAEE;
+    background-color: whitesmoke;
     border-radius: 5px;
     max-width: 1200px;
     margin: 0 auto;
 }
 
 .form-label-custom {
-    background-color: #DA8359;
-    color: #FCFAEE;
+    background-color: #647FBC;
+    color: black;
     padding: 12px 15px;
     margin-bottom: 10px;
     border-radius: 3px;
@@ -415,23 +422,25 @@ body {
 
 .form-control-custom,
 .form-select.form-control-custom {
-    background-color: #A5B68D;
+    background-color: #C4E1E6;
     border: none;
     padding: 12px 15px;
     border-radius: 3px;
     font-size: 16px;
-    color: #fff;
+    color: black;
     text-align: center;
 }
 
 .form-control-custom::placeholder {
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(0, 0, 0, 0.6);
 }
+
+
 
 .form-control-custom:focus,
 .form-select.form-control-custom:focus {
     background-color: #7c4dff;
-    color: #fff;
+    color: black;
     background-color: #A5B68D;
     box-shadow: 0 0 0 0.25rem rgba(124, 77, 255, 0.25);
 }
@@ -448,8 +457,8 @@ body {
 }
 
 .btn-file {
-    background-color: #A5B68D;
-    color: #fff;
+    background-color: #34699A;
+    color: black;
     padding: 12px 25px;
     border: none;
     border-radius: 3px;
@@ -459,7 +468,7 @@ body {
 }
 
 .btn-file:hover {
-    background-color: #A5B68D;
+    background-color: #34699A;
     color: #fff;
 }
 
@@ -475,8 +484,8 @@ body {
     border-radius: 3px;
 }
 
-.btn-submit {
-    background-color: #DA8359;
+.btn-submit,.btn-add {
+    background-color: #4FB7B3;
     color: #FCFAEE;
     padding: 15px 50px;
     border: none;
@@ -486,10 +495,13 @@ body {
     transition: background-color 0.3s;
 }
 
-.btn-submit:hover {
-    background-color: #DA8359;
+.btn-submit:hover,.btn-add:hover {
+    background-color: #4FB7B3;
     color: #FCFAEE;
+    border-radius: 3px;
 }
+/* change */
+
 
 /* ===== Problems List Page Styles ===== */
 
@@ -650,13 +662,15 @@ body {
             width: 100%;
         }
 
+        /* change */
         .form-title-emp123 {
             text-align: center;
-            color: #667eea;
+            color: #34699A;
             font-weight: bold;
             margin-bottom: 30px;
             font-size: 2rem;
         }
+        /* change */
 
         .form-label {
             font-weight: 600;
@@ -677,7 +691,7 @@ body {
         }
 
         .btn-submit-emp123 {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background:  #4FB7B3 ;
             color: white;
             padding: 12px 40px;
             border: none;
@@ -689,11 +703,11 @@ body {
 
         .btn-submit-emp123:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 5px 20px white;
         }
 
         .btn-cancel-emp123 {
-            background: #6c757d;
+            background:  #CD2C58 ;
             color: white;
             padding: 12px 40px;
             border: none;
@@ -704,7 +718,8 @@ body {
         }
 
         .btn-cancel-emp123:hover {
-            background: #5a6268;
+            background: linear-gradient(135deg, #E06B80 0%, #CD2C58 100%);
+            color: black;
             transform: translateY(-2px);
         }
 
@@ -749,7 +764,7 @@ body {
     width: 30px;
     height: 12px;
     
-}
+}   
 
 .table-responsive::-webkit-scrollbar-track {
     background: #f1f1f1;
@@ -757,22 +772,26 @@ body {
 }
 
 .table-responsive::-webkit-scrollbar-thumb {
-    background: #DA8359;
+    background: #113F67;
     border-radius: 10px;
 }
 
+/* change */
 .table-responsive::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    background: #113F67;
 }
+/* change */
 
 .table-custom tbody td.col-description {
     cursor: pointer;
     transition: background-color 0.2s ease;
 }
 
+/* change */
 .table-custom tbody td.col-description:hover {
-    background-color: #ffc670;
+    background-color: #91ADC8;
 }
+/* change */
 
 .modal-body .action-section {
     display: flex;
