@@ -233,4 +233,61 @@ INSERT INTO problem (createBy, title, description, categoryid, createat, statusi
 (11, 'สัญญาณเตือนไฟไหม้ดังโดยไม่มีเหตุ', 'เกิดเสียงเตือนเอง', 6, NOW(), 1, 5, 2, 'ตึก A ชั้น 1'),
 (47, 'เครื่องทำน้ำอุ่นไม่ทำงาน', 'ไม่มีความร้อนขณะเปิดใช้งาน', 7, NOW(), 1, 4, 3, 'ตึก B ชั้น 2'),
 (10, 'ระบบ HRMS ล่ม', 'พนักงานไม่สามารถบันทึกเวลาได้', 1, NOW(), 1, 2, 5, 'ตึก A ชั้น 2');
+
+
+
+
+
+INSERT INTO category (categoryid, categoryname) VALUES
+(1, 'ซอฟต์แวร์'),
+(2, 'ฮาร์ดแวร์'),
+(3, 'ระบบเครือข่าย'),
+(4, 'ระบบไฟฟ้า'),
+(5, 'อาคารสถานที่'),
+(6, 'ความปลอดภัย'),
+(7, 'เครื่องใช้ไฟฟ้า');
+
+INSERT INTO department (departmentid, departmentname) VALUES
+(1, 'Information Technology'),
+(2, 'Human Resources'),
+(3, 'Finance'),
+(4, 'Marketing'),
+(5, 'Customer Support');
+
+INSERT INTO role (roleid, rolename) VALUES
+(1, 'User'),
+(2, 'Admin'),
+(3, 'Technician'),
+(4, 'None');
+
+INSERT INTO servicelevelagreement (priorityid, prioritylevel, responsetime, resolvetime, description) VALUES
+(1, 'ระดับวิกฤต', 15, 120, NULL),
+(2, 'ระดับสูง', 30, 240, NULL),
+(3, 'ระดับกลาง', 60, 480, NULL),
+(4, 'ระดับต่ำ', 120, 1440, NULL),
+(5, 'ระดับเล็กน้อย', 240, 2880, NULL);
+
+INSERT INTO status (statusid, statusstate) VALUES
+(1, 'New / สร้างใหม่'),
+(2, 'Open / กำลังดำเนินการ'),
+(4, 'Resolved / แก้ไขแล้ว'),
+(3, 'Pending / รอข้อมูล');
+
+INSERT INTO teams (teamid, teamname, departmentid) VALUES
+(1, 'Programmer', 1),
+(2, 'Network Engineer', 1),
+(3, 'System Administrator', 1),
+(4, 'Recruiter', 2),
+(5, 'HR Officer', 2),
+(6, 'Accountant', 3),
+(7, 'Financial Analyst', 3),
+(8, 'Digital Marketing', 4),
+(9, 'Conten Creator', 4),
+(10, 'Support Agent', 5),
+(11, 'Technical Support', 5);
+
+
+
+
+
 */
